@@ -34,9 +34,7 @@ Ejemplo: main.py, module1.py.
 ○ Directorios: Utilizar nombres en minúsculas sin espacios ni
 caracteres especiales. Ejemplo: docs, src.
 
-3
-
-● Funciones. Utilizar el formato snake_case en minúsculas comenzando la
+3. ● Funciones. Utilizar el formato snake_case en minúsculas comenzando la
 primera palabra con un verbo en infinitivo. Ejemplo: obtener_usuario,
 actualizar_datos.
 ● Variables. Utilizar el formato snake_case. Ejemplo: contador,
@@ -68,3 +66,15 @@ Notas: En esta etapa, no es necesario desarrollar consultas SQL. El enfoque est�
 el diseño y estructura de la base de datos. Se recomienda utilizar una herramienta de
 modelado de bases de datos, como draw.io, para crear el diagrama del modelo
 relacional.
+
+# INSTALACIONES NECESARIAS como drivers o librerias en python
+
+pip install python-dotenv
+
+pip install mysql-connector-python
+
+# INSTALACION EXTERNA REQUERIDA
+
+instalar docker desktop o docker cli dependiendo del sistema operativo
+
+ejecucion en terminal del comando "docker compose up" para levantar contenedores con las 2 imagenes

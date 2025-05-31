@@ -3,7 +3,7 @@ name: 'ea3-abp'
 services:
   db:
     image: mysql:8.0
-    container_name: mysql_db
+    container_name: contenedor1
     environment:
       MYSQL_ROOT_PASSWORD: administrador
       MYSQL_DATABASE: basededatos1
@@ -15,7 +15,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin_app
+    container_name: contenedor2
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
