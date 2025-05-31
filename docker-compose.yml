@@ -1,0 +1,27 @@
+name: 'ea3-abp'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: administrador
+      MYSQL_DATABASE: basededatos1
+      MYSQL_USER: grupo23
+      MYSQL_PASSWORD: 12345678Grupo
+    ports:
+      - "3306:3306"    
+    
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_app
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: grupo23
+      PMA_PASSWORD: 12345678Grupo
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
