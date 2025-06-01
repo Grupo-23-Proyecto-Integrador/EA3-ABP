@@ -5,21 +5,21 @@ from mysql.connector import Error
 if __name__ == "__main__":
     # variables de entorno del .env (desarrollo) a traves de las librerias os y dotenv
     load_dotenv()
-    host = os.get("HOST")
-    database = os.get("DATABASE")
-    user = os.get("MYSQLUSER")
-    password = os.get("MYSQLPASSWORD")
+    host = os.getenv("HOST")
+    database = os.getenv("DATABASE")
+    user = os.getenv("MYSQLUSER")
+    password = os.getenv("MYSQLPASSWORD")
 
-    
-    instancia_conexion = config_bd.Configurar_mysql(host, database, user, password)
-    conexion = instancia_conexion.conectar()
-    if conexion:
-        # if conexion es true
-        try:
-            cursor = conexion.cursor()
-            # efectuar consulta
-            cursor.close()
-        except Error as e:
-            print(f"Error en la consulta de la BD: {e}")
-        finally:
-            instancia_conexion.cerrar_conexion() # cerrar la conexión siempre (importante)
+# Pasos a Cumplir
+# crear una function (def) para poblar tabla
+# crear una funcion para crear tabla si no existe aun en la BD
+# desplegar menu (funcion) 2 opciones en este menu principal: registro de usuario - inicio de sesion
+# desplegar menu (depende del rol de la persona que inicio sesion)
+# usuario admin (permisos) ver todos los usuarios / cambiar rol de usuario / eliminar usuario
+
+# instanciar la clase
+inicio = config_bd.Configurar_mysql()
+# completar los argumentos del metodo
+inicio.mysql_configurar(host,database,user,password)
+# efectuar una conexion de prueba
+inicio.conectar()

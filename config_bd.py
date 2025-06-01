@@ -4,12 +4,12 @@ from mysql.connector import Error
 
 class Configurar_mysql:
     # metodo inicial para configurar los datos de la conexion
-    def __init__(self, host='localhost', database:str="db", user:str="usuario", password:str="password"):
-        
-        self.host = host
-        self.database = database
-        self.user = user
-        self.password = password
+    def mysql_configurar(self, mysql_host, mysql_database:str, mysql_user:str, mysql_password:str):
+        # define conexion mysql
+        self.host = mysql_host
+        self.database = mysql_database
+        self.user = mysql_user
+        self.password = mysql_password
         self.estado_conexion = None
     # metodo: Establece y devuelve una conexión a la base de datos MySQL. o devuelvo None
     def conectar(self):                        
@@ -40,5 +40,4 @@ class Configurar_mysql:
         if self.estado_conexion and self.estado_conexion.is_connected():
             self.estado_conexion.close()
             # Conexión mysql cerrada, hago un print si lo veo necesario
-
 

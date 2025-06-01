@@ -34,7 +34,8 @@ Ejemplo: main.py, module1.py.
 ○ Directorios: Utilizar nombres en minúsculas sin espacios ni
 caracteres especiales. Ejemplo: docs, src.
 
-3. ● Funciones. Utilizar el formato snake_case en minúsculas comenzando la
+3. Funciones
+● Funciones. Utilizar el formato snake_case en minúsculas comenzando la
 primera palabra con un verbo en infinitivo. Ejemplo: obtener_usuario,
 actualizar_datos.
 ● Variables. Utilizar el formato snake_case. Ejemplo: contador,
