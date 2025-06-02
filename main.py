@@ -12,8 +12,7 @@ if __name__ == "__main__":
     root_password = os.getenv("MYSQL_ROOT_PASSWOR")
 
 # Pasos a Cumplir
-# crear una function (def) para poblar tabla
-# crear una funcion para crear tabla si no existe aun en la BD
+# crear un script para poblar tabla
 # desplegar menu (funcion) 2 opciones en este menu principal: registro de usuario - inicio de sesion
 # desplegar menu (depende del rol de la persona que inicio sesion)
 # usuario admin (permisos) ver todos los usuarios / cambiar rol de usuario / eliminar usuario
@@ -23,6 +22,7 @@ inicio = config_bd.Clase_mysql()
 # completar los argumentos del metodo
 inicio.mysql_configurar(host,database,user,password)
 # instanciar usuario
-usuario = usuarios.Usuarios('nombre' , 'apellido', 'email', 'usuario', 'password')
+usuario = usuarios.Usuarios()
+usuario.completar_perfil("javier", "carranza", "javi@gmail.com", "javicarranza123", "12345678")
 # este metodo insert usuario funciona (en la tabla no puede haber 2 emails o apodos iguales (restriccion))
 inicio.insert_usuario(usuario.nombre, usuario.apellido, usuario.usuario, usuario.email,usuario.password)

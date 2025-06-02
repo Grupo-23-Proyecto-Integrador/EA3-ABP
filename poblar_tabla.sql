@@ -1,0 +1,1 @@
+/* efectuar un insert con multiples valores */

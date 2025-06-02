@@ -6,7 +6,7 @@ class Usuarios(config_bd.Clase_mysql):
     # roles o usuarios : Admin / Usuario estandar
     __rol = "usuario_estandar"
 
-    def __init__(self, nombre:str, apellido:str, email:str, usuario:str, password:str):
+    def completar_perfil(self, nombre:str=None, apellido:str=None, email:str=None, usuario:str=None, password:str=None):
     # creacion de atributos o propiedades del objeto que se va a instanciar
         self.nombre = nombre
         self.apellido = apellido
@@ -31,15 +31,13 @@ class Usuarios(config_bd.Clase_mysql):
               email: {self.email},
               usuario: {self.usuario} 
               rol: {self.__rol}''')
-
        
     def sesion(self):
         if self.__sesion_activa:
             print(f'el usuario: {self.usuario} ha iniciado sesion')
         else:
             print(f'el usuario: {self.usuario} no ha iniciado sesion')    
-  
-    
+      
     def es_admin(self):
         return self.__rol == 'admin'
 
