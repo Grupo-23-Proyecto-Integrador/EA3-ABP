@@ -78,3 +78,43 @@ class Clase_mysql:
         finally:
             if cursor:
                 cursor.close()
+
+    def consultar_usuario(self , email, password):
+        # retorna datos para crear una sesion activa
+        conexion = self.conectar()
+        if not conexion:
+            print(f'no se pudo establecer conexion con la BD')
+            return False
+        
+        try:
+            # verifica la existencia del usuario
+            cursor = conexion.cursor()
+            verificar = "SELECT id_usuario, rol, usuario FROM usuarios_login WHERE email = %s AND password = %s"
+            cursor.execute(verificar, (email,password))
+            resultado = cursor.fetchone()
+            # retorna una tupla, ver si puede crearse una clase para simplificar
+            if resultado == True:
+                return {
+                    "id": resultado[0],
+                    "rol": resultado[1],
+                    "usuario": resultado[2]
+                }    
+            else:
+            # retorno una tupla vacia    
+                return {
+                    "id": "",
+                    "rol": "",
+                    "usuario": ""
+                } 
+        except Exception as e:
+            print(f'error al consultar el email y password, error: {e}')
+            # retorno una tupla vacia    
+            return {
+                    "id": "",
+                    "rol": "",
+                    "usuario": ""
+                } 
+        finally:
+            if cursor:
+                cursor.close()
+                conexion.close()
