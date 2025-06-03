@@ -43,6 +43,7 @@ class Usuarios(config_bd.Clase_mysql):
     def __destruir_sesion(self):
         self.__rol = ""
         self.__sesion_activa = False
+        self.__id_usuario = 0
 
 
     
