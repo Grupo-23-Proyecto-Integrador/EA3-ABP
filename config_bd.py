@@ -25,7 +25,8 @@ class Clase_mysql:
                 )
                 if self.estado_conexion.is_connected():
                     # is_connected (es un metodo heredado)
-                    print(f"Conexión exitosa a la BD: '{self.database}' en '{self.host}'")
+                    print(f"")
+                    # el print de mostrar conexion exitosa es opcional, estaba para comprobar que efectivamente funcione
                 return self.estado_conexion
                 # si la conexión fue exitosa
             except Error as e:
@@ -66,15 +67,15 @@ class Clase_mysql:
             # si de ambas columnas no se encuentran registro procede al sql de insert en tablas separadas            
             # insertar usuario email y password en tabla usuarios_login
             # le pido que me retorne el id generado para hacer el insert en la tabla datos sensibles (relacion 1 a 1)
-            consulta = "INSERT INTO usuarios_login (usuario, email, password) VALUES (%s,%s,%s) RETURNING id_usuario"
+            consulta = "INSERT INTO usuarios_login (usuario, email, password_usuario) VALUES (%s,%s,%s)"
             cursor.execute(consulta, (usuario, email, password))
-            # el fetchone me devuelve una tupla( arreglo) y de ahi tomo el indice 0
-            id_generado = cursor.fetchone()[0]
+            # solucionado, habia puesto una sintaxis de postgres y eso me daba error en el return id
+            id_generado = cursor.lastrowid
             self.conectar().commit()
             # insertar nombre y apellido en la tabla datos_sensibles
             # id_usuario es el campo de la llave foranea que manualmente debo insertar (relacion 1 a 1)
-            consulta_datos_sensibles = "INSERT INTO datos_sensibles (id_usuario, nombre, apellido) VALUES (%s,%s)"
-            cursor.execute(consulta_datos_sensibles,(id_generado, nombre,apellido))            
+            insert = "INSERT INTO datos_sensibles (id_usuario, nombre, apellido) VALUES (%s,%s,%s)"
+            cursor.execute(insert,(id_generado, nombre, apellido))            
             self.conectar().commit()
             print(f'registro exitoso del usuario: {usuario} con el email: {email}')
             return True

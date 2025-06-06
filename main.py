@@ -97,7 +97,7 @@ def datos_alta():
         password = input("ingrese su password con maximo 50 caracteres: ")                    
     # instanciar objeto, rellenarlo y devolverlo a main            
     u = usuarios.Usuarios()
-    u.completar_perfil(nombre, apellido, email, nombre_usuario, password)
+    u.completar_perfil(nombre, apellido, nombre_usuario,email, password)
     return u 
 
 def requerir_datos_sesion():

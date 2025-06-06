@@ -4,7 +4,7 @@ CREATE TABLE usuarios_login (
                         id_usuario INT AUTO_INCREMENT PRIMARY KEY,
                         email VARCHAR(255) NOT NULL UNIQUE,
                         usuario VARCHAR(255) NOT NULL UNIQUE,
-                        password VARCHAR(255) NOT NULL,
+                        password_usuario VARCHAR(255) NOT NULL,
                         rol VARCHAR(20) DEFAULT 'usuario_estandar' );
 
 CREATE TABLE datos_sensibles (
