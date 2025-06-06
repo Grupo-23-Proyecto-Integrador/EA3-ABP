@@ -42,6 +42,7 @@ class Clase_mysql:
             # Conexión mysql cerrada, hago un print si lo veo necesario
     # Creo una consulta Insert (nuevo usuario)
     def insert_usuario(self , nombre, apellido, usuario, email, password):
+        # revisar este metodo constantemente ya que esta el rediseño de las tablas y sus relaciones
         # retorna true si fue exitosa la consulta sino retorna false porque algo salio mal
         conexion = self.conectar()
         if not conexion:
@@ -62,14 +63,18 @@ class Clase_mysql:
             if cursor.fetchone():
                 print(f'el usuario: {email} ya existe')
                 return False
-            # si de ambas columnas no se encuentran registro procede al sql de insert en tablas separadas
-            # insertar nombre y apellido en la tabla datos_sensibles
-            consulta_datos_sensibles = "INSERT INTO datos_sensibles (nombre, apellido) VALUES (%s,%s)"
-            cursor.execute(consulta_datos_sensibles,(nombre,apellido))
-            self.conectar().commit()
+            # si de ambas columnas no se encuentran registro procede al sql de insert en tablas separadas            
             # insertar usuario email y password en tabla usuarios_login
-            consulta = "INSERT INTO usuarios_login (usuario, email, password) VALUES (%s,%s,%s)"
+            # le pido que me retorne el id generado para hacer el insert en la tabla datos sensibles (relacion 1 a 1)
+            consulta = "INSERT INTO usuarios_login (usuario, email, password) VALUES (%s,%s,%s) RETURNING id_usuario"
             cursor.execute(consulta, (usuario, email, password))
+            # el fetchone me devuelve una tupla( arreglo) y de ahi tomo el indice 0
+            id_generado = cursor.fetchone()[0]
+            self.conectar().commit()
+            # insertar nombre y apellido en la tabla datos_sensibles
+            # id_usuario es el campo de la llave foranea que manualmente debo insertar (relacion 1 a 1)
+            consulta_datos_sensibles = "INSERT INTO datos_sensibles (id_usuario, nombre, apellido) VALUES (%s,%s)"
+            cursor.execute(consulta_datos_sensibles,(id_generado, nombre,apellido))            
             self.conectar().commit()
             print(f'registro exitoso del usuario: {usuario} con el email: {email}')
             return True
