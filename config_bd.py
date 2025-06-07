@@ -160,3 +160,44 @@ class Clase_mysql:
             if cursor:
                 cursor.close()
                 conexion.close()
+
+    def ver_usuarios(self):
+        # trae un resultado con todos los usuarios del sistema considerando que es un resultado pequeño
+        # no requiere argumentos
+        conexion = self.conectar()
+        if not conexion:
+            print(f'no se pudo establecer conexion con la BD')
+            return False
+        
+        try:
+            # instancio un objeto cursos con todos los metodos para interactuar con la bd
+            cursor = conexion.cursor()
+            # consulta
+            consulta = f"""SELECT 
+                            u.id_usuario, 
+                            u.email, 
+                            u.usuario, 
+                            u.rol, 
+                            ds.nombre, 
+                            ds.apellido, 
+                            ds.dni, 
+                            ds.celular, 
+                            ds.domicilio 
+                        FROM usuarios_login AS u LEFT JOIN datos_sensibles AS ds ON u.id_usuario = ds.id_usuario;"""
+            cursor.execute(consulta)
+            # el metodo fetchone devuelve una tupla
+            resultado = cursor.fetchall()
+            # utilizo una clase sesion para manejar los datos
+            if resultado: 
+                return resultado            
+            else:
+            # retorno una tupla vacia    
+                return "sin resultados"
+        except Exception as e:
+            print(f'error al efectuar la consulta: {e}')
+            # retorno una tupla vacia    
+            return resultado 
+        finally:
+            if cursor:
+                cursor.close()
+                conexion.close()           

@@ -28,11 +28,13 @@ def menu_inicial():
             print(f"""
                   Usuario: {s.ver_usuario()}
                   Acceso: {s.ver_rol()}""")
+            estado_global.configurar_sesion(s.ver_id, s.ver_rol, s.ver_usuario)
             menu_admin()
         if s.ver_rol() == "usuario_estandar":
             print(f"""
                   Usuario: {s.ver_usuario()}
                   Acceso: {s.ver_rol()}""")
+            estado_global.configurar_sesion(s.ver_id, s.ver_rol, s.ver_usuario)
             menu_estandar()       
     elif opcion == "2":
         # opcion registrar usuario nuevo
@@ -52,7 +54,41 @@ def menu_admin():
           * 4. Salir
 
           """)
-   
+    
+    opcion = input(f"""ingrese alguna opcion valida:
+                   """)
+
+    if opcion == "1":
+        print(estado_global.ver_estado())
+        # no se piden datos ya que trae una consulta de todos los usuarios        
+        todos = conexion_instanciada.ver_usuarios()
+        # simple print pra ver la tupla de resultados
+        print(todos)
+        # finalizada la operacion ejecutar un menu de destrucion de la sesion
+        estado_global.cerrar_sesion()
+        print(estado_global.ver_estado())    
+    elif opcion == "2":
+        print(estado_global.ver_estado())
+        print("usted debe seleccionar los datos a modificar")
+        # nuevamente verificar los permisos de admin almacenados en local
+        # opcion editar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
+        # finalizada la operacion ejecutar un menu de destrucion de la sesion
+        estado_global.cerrar_sesion()
+        print(estado_global.ver_estado())
+    elif opcion == "3":
+        print(estado_global.ver_estado())
+        if estado_global.ver_estado:
+            print("ingrese el email del usuario que desee eliminar de forma permanente")
+        # nuevamente verificar los permisos de admin almacenados en local
+        # opcion eliminar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
+        # finalizada la operacion ejecutar un menu de destrucion de la sesion
+        estado_global.cerrar_sesion()
+        print(estado_global.ver_estado())    
+    else:
+        # finalizada la operacion ejecutar un menu de destrucion de la sesion
+        estado_global.cerrar_sesion()
+        print(estado_global.ver_estado())
+        return
 def menu_estandar():
     # rol estandar : solo puede ver sus datos personales 
     print(f"""
@@ -133,6 +169,8 @@ conexion_instanciada = config_bd.Clase_mysql()
 
 # completar los argumentos del metodo
 conexion_instanciada.mysql_configurar(host,database,user,password)
+# instanciar objeto con sus metodos para la gestion del estado de sesion global
+estado_global = sesiones.Nueva_Sesion()
 # carga del menu principal
 menu_inicial()
 
