@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import os, config_bd, usuarios, re
+import os, config_bd, usuarios, re, sesiones
 from mysql.connector import Error
 
 # variables de entorno del .env (desarrollo) a traves de las librerias os y dotenv
@@ -19,24 +19,26 @@ def menu_inicial():
     if opcion == "1":
         # opcion inicio de sesion de usuario existente
         sesion = requerir_datos_sesion()
-        # este metodo me devuelve una tupla con 3 valores
-        datos = conexion_instanciada.consultar_usuario(sesion.email, sesion.password)
-        datos[1]= "usuario_estandar"
-        datos[2]="fernandolepore"
-        if datos[1] == "admin":
+        # tupla desestructurada
+        usuario , password = sesion        
+        # efectuar la consulta a la bd con usuario y contraseña, esto me devolvera un objeto de tipo "sesion" para establecer sesion y para seleccionar el menu segun el rol
+        s = conexion_instanciada.consultar_username(usuario, password)
+        # ahora verifico el menu que le corresponde de acuerdo a la consulta de la base de datos      
+        if s.ver_rol() == "admin" or s.ver_rol() == "Admin":
             print(f"""
-                  Usuario: {datos[2]}
-                  Acceso: {datos[1]}""")
+                  Usuario: {s.ver_usuario()}
+                  Acceso: {s.ver_rol()}""")
             menu_admin()
-        if datos[1] == "usuario_estandar":
+        if s.ver_rol() == "usuario_estandar":
             print(f"""
-                  Usuario: {datos[2]}
-                  Acceso: {datos[1]}""")
+                  Usuario: {s.ver_usuario()}
+                  Acceso: {s.ver_rol()}""")
             menu_estandar()       
     elif opcion == "2":
         # opcion registrar usuario nuevo
         p = datos_alta()
-        resultado = conexion_instanciada.insert_usuario(p.nombre, p.apellido, p.email, p.usuario, p.password)
+
+        resultado = conexion_instanciada.insert_usuario(p.nombre, p.apellido, p.email, p.usuario, p.ver_password())
     else:
         return        
 # menu de usuario segun el rol accede a un metodo u otro
@@ -85,8 +87,8 @@ def datos_alta():
         email = input("ingrese su email con maximo 50 caracteres: ")
     # validar usuario
     nombre_usuario = input("ingrese su nombre de usuario: ") 
-    while len(nombre_usuario) < 3:
-        nombre_usuario = input("ingrese su nombre de usuario con minimo 3 caracteres: ")
+    while len(nombre_usuario) < 5:
+        nombre_usuario = input("ingrese su nombre de usuario con minimo 5 caracteres: ")
     while len(nombre_usuario) > 50:
         nombre_usuario = input("ingrese su nombre de usuario con maximo 50 caracteres: ") 
     # validar password
@@ -101,14 +103,11 @@ def datos_alta():
     return u 
 
 def requerir_datos_sesion():
-    email = input("ingrese su email: ") 
-    while len(email) < 5:
-        email = input("ingrese su email con minimo 5 caracteres: ")    
-    expresion = r'^[\w\.-]+@[a-zA-Z\d-]+\.[a-zA-Z]{2,}$'    
-    while re.match(expresion, email) == None:
-        email = input("ingrese email valido: ")
-    while len(email) > 50:
-        email = input("ingrese su email con maximo 50 caracteres: ")
+    # en este metodo ya estoy instanciando un objeto usuario con los datos necesarios
+    # validar usuario
+    usuario = input("ingrese su usuario: ")
+    while len(usuario) < 5:
+        usuario = input("ingrese su usuario con minimo 5 caracteres: ")
     # validar password
     password = input("ingrese su password: ") 
     while len(password) < 10:
@@ -116,9 +115,8 @@ def requerir_datos_sesion():
     while len(password) > 50:
         password = input("ingrese su password con maximo 50 caracteres: ")                    
     # instanciar objeto, rellenarlo y devolverlo a main            
-    sesion = usuarios.Usuarios()
-    sesion.completar_perfil(email, password)
-    return sesion
+    login = (usuario , password)
+    return login
 
 
 if __name__ == "__main__":

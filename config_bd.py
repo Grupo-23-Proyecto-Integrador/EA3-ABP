@@ -1,6 +1,7 @@
-import mysql.connector
+import mysql.connector , sesiones
 from mysql.connector import Error
 
+# este modulo cumple la funcion del MODEL o parte del negocio que exclusivamente interactua con la BD, es una representacion porque solo esta declarada la clase con sus metodos
 
 class Clase_mysql:
     # metodo inicial para configurar los datos de la conexion
@@ -85,7 +86,8 @@ class Clase_mysql:
             if cursor:
                 cursor.close()
 
-    def consultar_usuario(self , email, password):
+    def consultar_usuario_email(self , email, password):        
+        # consultar usuario por email y password
         # retorna datos para crear una sesion activa
         conexion = self.conectar()
         if not conexion:
@@ -120,6 +122,40 @@ class Clase_mysql:
                     "rol": "",
                     "usuario": ""
                 } 
+        finally:
+            if cursor:
+                cursor.close()
+                conexion.close()
+
+    def consultar_username(self , usuario, password):
+        # consultar usuario por nombre de usuario y password
+        # retorna datos para crear una sesion activa
+        conexion = self.conectar()
+        if not conexion:
+            print(f'no se pudo establecer conexion con la BD')
+            return False
+        
+        try:
+            # verifica la existencia del usuario
+            cursor = conexion.cursor()
+            # la consulta retorna 3 campos
+            verificar = "SELECT id_usuario, rol, usuario FROM usuarios_login WHERE usuario = %s AND password_usuario = %s"
+            cursor.execute(verificar, (usuario,password))
+            # el metodo fetchone devuelve una tupla
+            resultado = cursor.fetchone()
+            # utilizo una clase sesion para manejar los datos
+            d = sesiones.Nueva_Sesion()
+            id , rol, usuario = resultado
+            if id > 0 and usuario != "" and rol != "":
+                d.configurar_sesion(id, rol, usuario)
+                return d    
+            else:
+            # retorno una tupla vacia    
+                return d
+        except Exception as e:
+            print(f'su usuario o contraseña son incorrectos intente nuevamente')
+            # retorno una tupla vacia    
+            return d 
         finally:
             if cursor:
                 cursor.close()

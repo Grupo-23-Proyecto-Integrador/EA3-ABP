@@ -7,14 +7,19 @@ class Usuarios(config_bd.Clase_mysql):
     # roles o usuarios : Admin / Usuario estandar
         self.__rol = ""
         self.__id_usuario = 0
-    def completar_perfil(self, nombre:str=None, apellido:str=None, email:str=None, usuario:str=None, password:str=None):
+    def completar_perfil(self, nombre:str=None, apellido:str=None, email:str=None, usuario:str=None, password=None):
     # creacion de atributos o propiedades del objeto que se va a instanciar
         self.nombre = nombre
         self.apellido = apellido
         self.email = email
         self.usuario = usuario
-        self.password = password
+        self.__password = password
 
+    def set_usuario(self, usuario):
+        self.usuario = usuario
+
+    def set_password(self, password):        
+        self.__password = password
     def conexion_inicial(self, host='localhost', database='database', user='user', password='password'):
         # Llama al constructor de la clase padre
         super().mysql_configurar(host, database, user, password)    
@@ -31,16 +36,49 @@ class Usuarios(config_bd.Clase_mysql):
               apellido: {self.apellido}, 
               email: {self.email},
               usuario: {self.usuario} 
-              rol: {self.__rol}''')
-       
-    def __establecer_sesion(self):
-        # hacer la consulta sql para ver si existe el usuario
-        # retornar el id o algun campo mas
-        # establecer la sesion como activa
-        # establecer el rol de acuerdo a lo devuelvo de la consulta
-        print("completar el metodo")   
+              rol: {self.ver_acceso}''')
+
+    def ver_acceso(self):
+        return self.__rol
+    
+    def ver_usuario(self):
+        return self.usuario
+
+    def ver_password(self):
+        return self.__password
+
+    def set_sesion(self):
+        # este metodo efectua la consulta la base de datos, devuvel 3 valores y establece la sesion o no
+        # voy a trabajar con USUARIO Y CONTRASEÑA
+        conexion = self.conectar()
+        if not conexion:
+            print(f'no se pudo establecer conexion con la BD')
+            return False
+        
+        try:
+            # verifica la existencia del usuario ( descartar email, porque un usuario puede repetir email por ahora)
+            cursor = conexion.cursor()
+            verificar = "SELECT id_usuario, rol, usuario FROM usuarios_login WHERE usuario = %s AND password_usuario = %s"
+            cursor.execute(verificar, (self.usuario ,self.password))
+            resultado = cursor.fetchone()
+            # retorna una tupla, ver si puede crearse una clase para simplificar
+            if resultado == True:
+                print(resultado)
+                return True    
+            else:
+            # retorno una tupla vacia    
+                return False
+        except Exception as e:
+            print(f'error al consultar el email y password, error: {e}')
+            # retorno una tupla vacia    
+            return False 
+        finally:
+            if cursor:
+                cursor.close()
+                conexion.close()
+          
       
-    def __destruir_sesion(self):
+    def delete_sesion(self):
         self.__rol = ""
         self.__sesion_activa = False
         self.__id_usuario = 0
