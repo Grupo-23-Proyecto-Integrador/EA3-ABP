@@ -13,13 +13,13 @@ class Usuarios(config_bd.Clase_mysql):
         self.apellido = apellido
         self.email = email
         self.usuario = usuario
-        self.__password = password
+        self._password = password
 
     def set_usuario(self, usuario):
         self.usuario = usuario
 
     def set_password(self, password):        
-        self.__password = password
+        self._password = password
     def conexion_inicial(self, host='localhost', database='database', user='user', password='password'):
         # Llama al constructor de la clase padre
         super().mysql_configurar(host, database, user, password)    
@@ -39,13 +39,13 @@ class Usuarios(config_bd.Clase_mysql):
               rol: {self.ver_acceso}''')
 
     def ver_acceso(self):
-        return self.__rol
+        return self._rol
     
     def ver_usuario(self):
         return self.usuario
 
     def ver_password(self):
-        return self.__password
+        return self._password
 
     def set_sesion(self):
         # este metodo efectua la consulta la base de datos, devuvel 3 valores y establece la sesion o no
@@ -79,7 +79,7 @@ class Usuarios(config_bd.Clase_mysql):
           
       
     def delete_sesion(self):
-        self.__rol = ""
-        self.__sesion_activa = False
-        self.__id_usuario = 0
+        self._rol = ""
+        self._sesion_activa = False
+        self._id_usuario = 0
 

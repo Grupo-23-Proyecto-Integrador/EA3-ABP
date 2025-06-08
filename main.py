@@ -79,10 +79,12 @@ def menu_admin():
         # finalizada la operacion ejecutar un menu de destrucion de la sesion
             estado_global.cerrar_sesion()            
     elif opcion == "2":        
-            print("usted debe seleccionar los datos a modificar")
-        # nuevamente verificar los permisos de admin almacenados en local
-        # opcion editar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
-        # finalizada la operacion ejecutar un menu de destrucion de la sesion
+            if estado_global.ver_estado:
+                e = datos_editar()
+                resultado = conexion_instanciada.editar_usuario(e.email, e.usuario, e.password, e._rol, e._id_usuario)
+                # nuevamente verificar los permisos de admin almacenados en local
+                # opcion editar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
+                # finalizada la operacion ejecutar un menu de destrucion de la sesion
             estado_global.cerrar_sesion()
     elif opcion == "3":
             # nuevamente verificar los permisos de admin almacenados en local
@@ -175,6 +177,41 @@ def datos_alta():
     # instanciar objeto, rellenarlo y devolverlo a main            
     u = usuarios.Usuarios()
     u.completar_perfil(nombre, apellido, nombre_usuario,email, password)
+    return u 
+
+def datos_editar():
+    # validacion id_usuario
+    id_usuario = input("ingrese el id de usuario: ") 
+    while int(id_usuario) < 1:
+        id_usuario = input("ingrese un id valido: ")        
+    # validar email
+    email = input("ingrese su email: ") 
+    while len(email) < 5:
+        email = input("ingrese su email con minimo 5 caracteres: ")    
+    expresion = r'^[\w\.-]+@[a-zA-Z\d-]+\.[a-zA-Z]{2,}$'    
+    while re.match(expresion, email) == None:
+        email = input("ingrese email valido: ")
+    while len(email) > 50:
+        email = input("ingrese su email con maximo 50 caracteres: ")
+    # validar usuario
+    nombre_usuario = input("ingrese su nombre de usuario: ") 
+    while len(nombre_usuario) < 5:
+        nombre_usuario = input("ingrese su nombre de usuario con minimo 5 caracteres: ")
+    while len(nombre_usuario) > 50:
+        nombre_usuario = input("ingrese su nombre de usuario con maximo 50 caracteres: ") 
+    # validar password
+    password = input("ingrese su password: ") 
+    while len(password) < 10:
+        password = input("ingrese su password con minimo 10 caracteres: ")
+    while len(password) > 50:
+        password = input("ingrese su password con maximo 50 caracteres: ")
+    # validacion rol
+    rol = input("ingrese el nuevo rol de usuario: ") 
+    while len(rol) < 5 and len(rol) < 16:
+        rol = input("ingrese un rol valido (Admin o usuario_estandar por ejemplo): ")                        
+    # instanciar objeto, rellenarlo y devolverlo a main            
+    u = usuarios.Usuarios()
+    u.completar_perfil(id_usuario, rol, nombre_usuario, email, password)
     return u 
 
 def requerir_datos_sesion():

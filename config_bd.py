@@ -280,3 +280,38 @@ class Clase_mysql:
             if cursor:
                 cursor.close()
                 conexion.close() 
+
+    def editar_usuario(self, email, usuario, password_usuario, rol, id_usuario):
+        conexion = self.conectar()
+        if not conexion:
+            print(f'no se pudo establecer conexion con la BD')
+            return False
+        
+        try:
+            # instancio un objeto cursor
+            cursor = conexion.cursor()
+            # la consulta retorna 1 valor (del id editado)
+            editar = (f""""UPDATE usuarios_login
+                            SET
+                                email = %s, usuario = %s , password_usuario = %s, rol = %s 
+                            WHERE
+                                id_usuario = %s""")
+            cursor.execute(editar ,(email, usuario, password_usuario, rol, id_usuario ))
+            # el metodo lastrowid
+            resultado = cursor.lastrowid()           
+            if resultado > 0:
+                print(f"id: {resultado} con exito")
+                operacion = True                
+                return operacion 
+            else:
+            # retorno el id resultado fallido
+            # operacion fallida
+                print("no se pudo editar el id, intente nuevamente con un id diferente")    
+                return operacion
+        except Exception as e:
+            print(f'no se pudo editar el usuario con id: {id_usuario} y el error es el siguiente: {e}')
+            return operacion            
+        finally:
+            if cursor:
+                cursor.close()
+                conexion.close()                
