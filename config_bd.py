@@ -127,9 +127,12 @@ class Clase_mysql:
                 cursor.close()
                 conexion.close()
 
-    def consultar_username(self , usuario, password):
+    def consultar_username(self , u, password):
         # consultar usuario por nombre de usuario y password
         # retorna datos para crear una sesion activa
+        id = ""
+        rol = ""
+        usuario = ""
         conexion = self.conectar()
         if not conexion:
             print(f'no se pudo establecer conexion con la BD')
@@ -140,20 +143,24 @@ class Clase_mysql:
             cursor = conexion.cursor()
             # la consulta retorna 3 campos
             verificar = "SELECT id_usuario, rol, usuario FROM usuarios_login WHERE usuario = %s AND password_usuario = %s"
-            cursor.execute(verificar, (usuario,password))
+            cursor.execute(verificar, (u ,password))
             # el metodo fetchone devuelve una tupla
             resultado = cursor.fetchone()
             # utilizo una clase sesion para manejar los datos            
             id , rol, usuario = resultado
-            if id > 0 and usuario != "" and rol != "":                
-                return resultado  
+            if id > 0 and usuario != "" and rol != "":
+                res = [id, rol, usuario]                
+                return res
             else:
-            # retorno una tupla vacia    
-                return resultado
+                id =""                                               
+                res = [id, rol, usuario]                
+                return res  
         except Exception as e:
             print(f'su usuario o contraseña son incorrectos intente nuevamente')
-            # retorno una tupla vacia    
-            return resultado 
+            # retorno una tupla vacia
+            id = ""    
+            res = [id, rol, usuario]                
+            return res 
         finally:
             if cursor:
                 cursor.close()
@@ -236,6 +243,39 @@ class Clase_mysql:
             print(f'error al efectuar la consulta: {e}')
             # retorno una tupla vacia    
             return "sin resultados"
+        finally:
+            if cursor:
+                cursor.close()
+                conexion.close()
+
+    def eliminar_usuario_id(self, id_usuario):        
+        operacion = False        
+        # retorna un aviso de borrado exitoso
+        conexion = self.conectar()
+        if not conexion:
+            print(f'no se pudo establecer conexion con la BD')
+            return False
+        
+        try:
+            # instancio un objeto cursor
+            cursor = conexion.cursor()
+            # la consulta retorna 1 valor (del id eliminado)
+            borrar = f"DELETE FROM usuarios_login WHERE id_usuario = {id_usuario}"
+            cursor.execute(borrar)
+            # el metodo lastrowid
+            resultado = cursor.lastrowid()           
+            if resultado > 0:
+                print(f"id: {resultado} con exito")
+                operacion = True                
+                return operacion 
+            else:
+            # retorno el id resultado fallido
+            # operacion fallida
+                print("no se pudo eliminar el id, intente nuevamente con un id diferente")    
+                return operacion
+        except Exception as e:
+            print(f'no se pudo eliminar el usuario con id: {id_usuario} y el error es el siguiente: {e}')
+            return operacion            
         finally:
             if cursor:
                 cursor.close()

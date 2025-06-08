@@ -83,5 +83,3 @@ class Usuarios(config_bd.Clase_mysql):
         self.__sesion_activa = False
         self.__id_usuario = 0
 
-
-    

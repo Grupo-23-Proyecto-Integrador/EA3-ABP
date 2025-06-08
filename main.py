@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
-import os, config_bd, usuarios, re, sesiones
+import os, re
+import sesiones , config_bd , usuarios
 from mysql.connector import Error
 
 # variables de entorno del .env (desarrollo) a traves de las librerias os y dotenv
@@ -24,15 +25,24 @@ def menu_inicial():
         # opcion inicio de sesion de usuario existente
             sesion = requerir_datos_sesion()
         # tupla desestructurada
-            usuario , password = sesion        
+            u , password = sesion        
         # efectuar la consulta con usuario y contraseña, esto me devolvera un objeto con id, rol y usuario (para rellenear mi objeto sesion)
-            id, rol, usuario = conexion_instanciada.consultar_username(usuario, password)
-            estado_global.configurar_sesion(id, rol, usuario)            
+            # desestructuracion en el orden opuesto a la creacion en model
+            id, rol, usuario = conexion_instanciada.consultar_username(u, password)                       
+                        
         # ahora verifico el menu que le corresponde de acuerdo a la consulta de la base de datos      
-            if rol == "admin" or rol == "Admin":                        
+            if id == "" or id == "0" or rol == "" or usuario == "":
+                 print("los datos de inicio de seion son incorrectos")
+                 return
+            elif rol == "admin" or rol == "Admin":
+                estado_global.configurar_sesion(id, rol, usuario)                        
                 menu_admin()
-            elif rol == "usuario_estandar":                       
-                menu_estandar()       
+            elif rol == "usuario_estandar":
+                estado_global.configurar_sesion(id, rol, usuario)                       
+                menu_estandar()
+            else:
+                print("el usuario no existe, no tiene permisos suficientes o la contraseña es incorrecta intente nuevamente mas tarde")
+                      
         elif opcion == "2":
         # opcion registrar usuario nuevo
             p = datos_alta()
@@ -75,11 +85,27 @@ def menu_admin():
         # finalizada la operacion ejecutar un menu de destrucion de la sesion
             estado_global.cerrar_sesion()
     elif opcion == "3":
+            # nuevamente verificar los permisos de admin almacenados en local
             if estado_global.ver_estado:
-                print("ingrese el email del usuario que desee eliminar de forma permanente")
-        # nuevamente verificar los permisos de admin almacenados en local
-        # opcion eliminar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
-        # finalizada la operacion ejecutar un menu de destrucion de la sesion
+                # no se piden datos ya que trae una consulta de todos los usuarios        
+                todos = conexion_instanciada.ver_usuarios()
+                # simple print pra ver la tupla de resultados
+                print(todos)
+                # este metodo devuelve true o false dependiendo si la cesion esta activa
+                usuario = "0"
+                while usuario == "0":
+                    usuario = input(f"""
+                    ingrese el ID del usuario que desee eliminar de forma permanente:  
+                               """)                
+                    # opcion eliminar usuario ( le tengo que solicitar campo, id)
+                    print(f"el id: {usuario} proporcionado, este usuario sera eliminado de forma permanente con todos los datos personales asociados")
+                    confirmacion = ""
+                    while confirmacion != "si":
+                        confirmacion = input("""escriba 'si' para confirmar
+                                             """)               
+                        operacion = conexion_instanciada.eliminar_usuario_id(usuario)
+                        # finalizada la operacion ejecutar un menu de destrucion de la sesion
+                        print(f"usuario por id:{usuario} el resultado de la eliminacion es: {operacion}")
             estado_global.cerrar_sesion()            
     elif opcion == "4":
         # finalizada la operacion ejecutar un menu de destrucion de la sesion

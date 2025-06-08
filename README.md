@@ -1,6 +1,36 @@
 # EA3-ABP
 Módulo Iniciación a la Programación y Bases de Datos: Gestor de usuarios (registro e inicio de sesion)
 
+### 👥 Integrantes
+
+#### Matias agustin tejerina
+- DNI: 36356173
+- CORREO: Matiastejerina94@gmail.com
+- GITHUB: MatiasTejerina07
+- Stack: full stack  MERN (MongoDB - ExpressJS - ReactJS - NodeJS)
+
+#### Candelaria Jazmín Barjollo 
+- DNI: 41378648	
+- CORREO: candebarjollo@gmail.com	
+- GITHUB: candebar
+
+#### Matilde Maidana Sandoval 
+- DNI: 33948480	
+- CORREO: dis.matilde.m@gmail.com
+- GITHUB: Matilde-ms
+
+#### Gerardo Lauro Romero 
+- DNI: 35782538	
+- CORREO: gerardolauroromero@gmail.com
+- GITHUB: GerLR
+- Stack: .NET - C# - Js - CSS - HTML - MSSQL
+
+#### Julio Fernando Lepore 
+- DNI: 30267847
+- CORREO: juliofernandolepore@gmail.com
+- GITHUB: juliofernandolepore
+- Stack: full stack (react js - golang - postgresql)
+
 # Consignas
 
 Actividades Integradoras del Módulo

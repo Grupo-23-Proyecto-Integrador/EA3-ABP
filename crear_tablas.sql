@@ -15,6 +15,6 @@ CREATE TABLE datos_sensibles (
                         dni VARCHAR(50) DEFAULT 'sin completar',
                         celular VARCHAR(50) DEFAULT 'vacio',
                         domicilio VARCHAR(255) default 'sin completar',
-                        FOREIGN KEY(id_usuario) REFERENCES usuarios_login(id_usuario));
+                        FOREIGN KEY(id_usuario) REFERENCES usuarios_login(id_usuario) ON DELETE CASCADE);
 
                                                
