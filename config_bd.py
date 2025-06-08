@@ -1,4 +1,4 @@
-import mysql.connector , sesiones
+import mysql.connector 
 from mysql.connector import Error
 
 # este modulo cumple la funcion del MODEL o parte del negocio que exclusivamente interactua con la BD, es una representacion porque solo esta declarada la clase con sus metodos
@@ -143,19 +143,17 @@ class Clase_mysql:
             cursor.execute(verificar, (usuario,password))
             # el metodo fetchone devuelve una tupla
             resultado = cursor.fetchone()
-            # utilizo una clase sesion para manejar los datos
-            d = sesiones.Nueva_Sesion()
+            # utilizo una clase sesion para manejar los datos            
             id , rol, usuario = resultado
-            if id > 0 and usuario != "" and rol != "":
-                d.configurar_sesion(id, rol, usuario)
-                return d    
+            if id > 0 and usuario != "" and rol != "":                
+                return resultado  
             else:
             # retorno una tupla vacia    
-                return d
+                return resultado
         except Exception as e:
             print(f'su usuario o contraseña son incorrectos intente nuevamente')
             # retorno una tupla vacia    
-            return d 
+            return resultado 
         finally:
             if cursor:
                 cursor.close()
@@ -200,4 +198,45 @@ class Clase_mysql:
         finally:
             if cursor:
                 cursor.close()
-                conexion.close()           
+                conexion.close() 
+
+    def mis_datos(self, id:int):
+        print(id)
+        # trae mis datos de usuario
+        # el argumento requerido es mi id
+        conexion = self.conectar()
+        if not conexion:
+            print(f'no se pudo establecer conexion con la BD')
+            return False
+        
+        try:
+            # instancio un objeto cursos con todos los metodos para interactuar con la bd
+            cursor = conexion.cursor()
+            # consulta de mis datos de ambas tablas
+            verificar = """SELECT 
+                            u.id_usuario, 
+                            u.email, 
+                            u.usuario, 
+                            u.rol, 
+                            ds.nombre, 
+                            ds.apellido, 
+                            ds.dni, 
+                            ds.celular, 
+                            ds.domicilio 
+                        FROM usuarios_login AS u LEFT JOIN datos_sensibles AS ds ON u.id_usuario = ds.id_usuario WHERE u.id_usuario = %s;"""
+            cursor.execute(verificar, (id,))
+            # el metodo fetchone devuelve una sola tupla
+            resultado = cursor.fetchone()            
+            if resultado: 
+                return resultado            
+            else:
+            # retorno una tupla vacia    
+                return "sin resultados"
+        except Exception as e:
+            print(f'error al efectuar la consulta: {e}')
+            # retorno una tupla vacia    
+            return "sin resultados"
+        finally:
+            if cursor:
+                cursor.close()
+                conexion.close() 
