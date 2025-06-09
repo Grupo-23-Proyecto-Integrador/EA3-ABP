@@ -32,7 +32,7 @@ def menu_inicial():
                         
         # ahora verifico el menu que le corresponde de acuerdo a la consulta de la base de datos      
             if id == "" or id == "0" or rol == "" or usuario == "":
-                 print("los datos de inicio de seion son incorrectos")
+                 print("los datos de inicio de sesion son incorrectos")
                  return
             elif rol == "admin" or rol == "Admin":
                 estado_global.configurar_sesion(id, rol, usuario)                        
@@ -81,7 +81,7 @@ def menu_admin():
     elif opcion == "2":        
             if estado_global.ver_estado:
                 e = datos_editar()
-                resultado = conexion_instanciada.editar_usuario(e.email, e.usuario, e.password, e._rol, e._id_usuario)
+                resultado = conexion_instanciada.editar_usuario(e.ver_email(), e.ver_nombre_usuario(), e.ver_password(), e.ver_rol(), e.ver_id())
                 # nuevamente verificar los permisos de admin almacenados en local
                 # opcion editar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
                 # finalizada la operacion ejecutar un menu de destrucion de la sesion
@@ -200,19 +200,18 @@ def datos_editar():
     while len(nombre_usuario) > 50:
         nombre_usuario = input("ingrese su nombre de usuario con maximo 50 caracteres: ") 
     # validar password
-    password = input("ingrese su password: ") 
-    while len(password) < 10:
+    password_usuario = input("ingrese su password: ") 
+    while len(password_usuario) < 10:
         password = input("ingrese su password con minimo 10 caracteres: ")
-    while len(password) > 50:
+    while len(password_usuario) > 50:
         password = input("ingrese su password con maximo 50 caracteres: ")
     # validacion rol
     rol = input("ingrese el nuevo rol de usuario: ") 
     while len(rol) < 5 and len(rol) < 16:
         rol = input("ingrese un rol valido (Admin o usuario_estandar por ejemplo): ")                        
-    # instanciar objeto, rellenarlo y devolverlo a main            
-    u = usuarios.Usuarios()
-    u.completar_perfil(id_usuario, rol, nombre_usuario, email, password)
-    return u 
+    e = usuarios.Editar()
+    e.editar_relleno(id_usuario, email, nombre_usuario, password_usuario, rol )   
+    return e
 
 def requerir_datos_sesion():
     # en este metodo ya estoy instanciando un objeto usuario con los datos necesarios
