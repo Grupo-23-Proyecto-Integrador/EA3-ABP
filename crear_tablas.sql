@@ -1,20 +1,19 @@
-/* revisar, RELACION 1 A 1, COMPLETO TABLA 1, ME DEVUELVE UN ID Y CON ESE ID HAGO EL INSERT EN LA SIGUIENTE TABLA, PORQUE NO PUEDEN EXISTIR UN USUARIO CON VARIOS REGISTROS
-DE DATOS SENSIBLES */ 
+/* cumplimiento de la 3FN (TERCERA FORMA NORMAL) */ 
+
+CREATE TABLE roles (
+                    id_rol INT AUTO_INCREMENT PRIMARY KEY,
+                    nombre_rol VARCHAR(50) UNIQUE,
+                    descripcion_rol VARCHAR(255)
+); 
+
 CREATE TABLE usuarios_login ( 
                         id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+                        rol INT NOT NULL,
+                        nombre VARCHAR(255) NOT NULL,
+                        apellido VARCHAR(255) NOT NULL,
                         email VARCHAR(255) NOT NULL UNIQUE,
                         usuario VARCHAR(255) NOT NULL UNIQUE,
                         password_usuario VARCHAR(255) NOT NULL,
-                        rol VARCHAR(20) DEFAULT 'usuario_estandar' );
+                        FOREIGN KEY(rol) REFERENCES roles(id_rol));
 
-CREATE TABLE datos_sensibles (
-                        id_datos INT AUTO_INCREMENT PRIMARY KEY,
-                        id_usuario INT NOT NULL UNIQUE,
-                        nombre VARCHAR(255) NOT NULL,
-                        apellido VARCHAR(255) NOT NULL,
-                        dni VARCHAR(50) DEFAULT 'sin completar',
-                        celular VARCHAR(50) DEFAULT 'vacio',
-                        domicilio VARCHAR(255) default 'sin completar',
-                        FOREIGN KEY(id_usuario) REFERENCES usuarios_login(id_usuario) ON DELETE CASCADE);
-
-                                               
+                                             
