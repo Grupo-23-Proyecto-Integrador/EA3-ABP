@@ -1,20 +1,28 @@
-class Nueva_Sesion():
+class Nueva():
     def __init__(self):
         self._logueado = False
         self._rol = ""
         self._usuario = ""
         self._id = 0
 
-    def configurar_sesion(self, id:int, rol:str, usuario:str):        
+    def set_sesion(self, id:int, rol:str, usuario:str):
+        if id == "" or id == "0" or rol == "" or usuario == "":
+                 print("los datos de inicio de sesion son incorrectos")
+                 return
+        elif rol == "admin" or rol == "Admin":
+                return "Admin"
+        elif rol == "usuario_estandar":
+                return "usuario_estandar"
+        else:
+                print("el usuario no existe, no tiene permisos suficientes o la contraseña es incorrecta intente nuevamente mas tarde")
+                return "inexistente"   
+             
         if id != 0 and rol != "" and usuario != "":
             self._rol = rol
             self._usuario = usuario
             self._id = id
             self._logueado = True
             
-    def activar_sesion(self):
-        if self._rol != "" and self._id != 0  and self._usuario != "":
-            self._logueado = True
 
     def cerrar_sesion(self):
         self._logueado = False
@@ -29,13 +37,8 @@ class Nueva_Sesion():
         return self._usuario
     
     def ver_id(self):
-        return self._id
+        return self._id   
     
-    def info_estado(self):
-        if self._logueado == True:
-            print("la sesion esta activa")
-        else:
-            print("la sesion esta inactiva")
 
     def ver_estado(self):
         return self._logueado

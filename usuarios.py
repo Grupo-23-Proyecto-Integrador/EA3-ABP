@@ -1,14 +1,16 @@
 import config_bd
 from mysql.connector import Error
 
-class Usuarios(config_bd.Clase_mysql):
+class Usuarios():
     def __init__(self):
-        self._sesion_activa = False
-    # roles o usuarios : Admin / Usuario estandar
-        self._rol = ""
-        self._id_usuario = 0
-    def completar_perfil(self, nombre:str=None, apellido:str=None, email:str=None, usuario:str=None, password=None):
-    # creacion de atributos o propiedades del objeto que se va a instanciar
+        self.nombre = ""
+        self.apellido = ""
+        self.email = ""
+        self.usuario = ""
+        self._password = ""
+
+    def modificar(self, nombre:str=None, apellido:str=None, email:str=None, usuario:str=None, password=None):
+        # creacion de atributos o propiedades del objeto que se va a instanciar
         self.nombre = nombre
         self.apellido = apellido
         self.email = email
@@ -19,15 +21,7 @@ class Usuarios(config_bd.Clase_mysql):
         self.usuario = usuario
 
     def set_password(self, password):        
-        self._password = password
-    def conexion_inicial(self, host='localhost', database='database', user='user', password='password'):
-        # Llama al constructor de la clase padre
-        super().mysql_configurar(host, database, user, password)    
-        # establecer aqui los datos de la conexion para la clase padre
-        self.host = host
-        self.database = database
-        self.user = user
-        self.password = password
+        self._password = password    
 
     def info(self):
     # creacion de metodo de la clase para mostrar atributos (publicos o permitidos)    
@@ -76,12 +70,7 @@ class Usuarios(config_bd.Clase_mysql):
             if cursor:
                 cursor.close()
                 conexion.close()
-          
-      
-    def delete_sesion(self):
-        self._rol = ""
-        self._sesion_activa = False
-        self._id_usuario = 0
+   
 
 class Editar():
     def __init__(self):

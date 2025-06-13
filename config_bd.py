@@ -1,7 +1,7 @@
 import mysql.connector 
 from mysql.connector import Error
 
-# este modulo cumple la funcion del MODEL o parte del negocio que exclusivamente interactua con la BD, es una representacion porque solo esta declarada la clase con sus metodos
+# esta clase unicamente se encarga de interactuar con la base de datos, unica responsabilidad a traces de sus metodos
 
 class Clase_mysql:
     # metodo inicial para configurar los datos de la conexion
@@ -65,20 +65,13 @@ class Clase_mysql:
             if cursor.fetchone():
                 print(f'el usuario: {email} ya existe')
                 return False
-            # si de ambas columnas no se encuentran registro procede al sql de insert en tablas separadas            
-            # insertar usuario email y password en tabla usuarios_login
-            # le pido que me retorne el id generado para hacer el insert en la tabla datos sensibles (relacion 1 a 1)
-            consulta = "INSERT INTO usuarios_login (usuario, email, password_usuario) VALUES (%s,%s,%s)"
-            cursor.execute(consulta, (usuario, email, password))
+            consulta = "INSERT INTO usuarios_login (nombre, apellido, usuario, rol, email, password_usuario) VALUES (%s,%s,%s,%s,%s,%s)"
+            usuario_estandar = 2
+            cursor.execute(consulta, (usuario, nombre, apellido, usuario_estandar, email, password))
             # solucionado, habia puesto una sintaxis de postgres y eso me daba error en el return id
             id_generado = cursor.lastrowid
-            self.conectar().commit()
-            # insertar nombre y apellido en la tabla datos_sensibles
-            # id_usuario es el campo de la llave foranea que manualmente debo insertar (relacion 1 a 1)
-            insert = "INSERT INTO datos_sensibles (id_usuario, nombre, apellido) VALUES (%s,%s,%s)"
-            cursor.execute(insert,(id_generado, nombre, apellido))            
-            self.conectar().commit()
-            print(f'registro exitoso del usuario: {usuario} con el email: {email}')
+            self.conectar().commit()            
+            print(f'registro exitoso id: {id_generado} del usuario: {usuario} con el email: {email}')
             return True
         except Exception as e:
             print(f'error al insertar el usuario, error: {e}')

@@ -1,62 +1,36 @@
 from dotenv import load_dotenv
-import os, re
-import sesiones , config_bd , usuarios
+import os, funciones
+import sesiones , config_bd 
 from mysql.connector import Error
 
-# variables de entorno del .env (desarrollo) a traves de las librerias os y dotenv
+estado_global = sesiones.Nueva()
 
-# aca se definen menu de inicio que comprende inicio de sesion y registro de usuario
-# instanciar objeto con sus metodos para la gestion del estado de sesion global
-estado_global = sesiones.Nueva_Sesion()
-
-def menu_inicial():    
-    opcion = "0"
-    while opcion != "3":
-        print(f"""
-          Bienvenido al Menu gestor de usuarios del sistema
-
-          * 1. Inicio de Sesion
-          * 2. Registrarse en el sistema
-          * 3. Para salir de la aplicacion
-
-          """)
-        opcion = input(f"""ingrese alguna opcion valida :  """)    
-        if opcion == "1":
-        # opcion inicio de sesion de usuario existente
-            sesion = requerir_datos_sesion()
-        # tupla desestructurada
-            u , password = sesion        
-        # efectuar la consulta con usuario y contraseña, esto me devolvera un objeto con id, rol y usuario (para rellenear mi objeto sesion)
-            # desestructuracion en el orden opuesto a la creacion en model
-            id, rol, usuario = conexion_instanciada.consultar_username(u, password)                       
-                        
-        # ahora verifico el menu que le corresponde de acuerdo a la consulta de la base de datos      
-            if id == "" or id == "0" or rol == "" or usuario == "":
-                 print("los datos de inicio de sesion son incorrectos")
-                 return
-            elif rol == "admin" or rol == "Admin":
-                estado_global.configurar_sesion(id, rol, usuario)                        
-                menu_admin()
-            elif rol == "usuario_estandar":
-                estado_global.configurar_sesion(id, rol, usuario)                       
-                menu_estandar()
+def menu_general():       
+    opcion = funciones.menu_inicial()
+    # opcion 1 inicio de sesion    
+    if opcion == "1":
+            sesion = funciones.requerir_datos_sesion()
+            # devuelve usuario y contraseña
+            usuario , password = sesion        
+            # verifico que el usuario exista previamente en el sistema
+            id, rol, usuario_verificado = conexion_instanciada.consultar_username(usuario, password)                      
+            # ahora verifico el menu que le corresponde de acuerdo a la consulta de la base de datos      
+            permiso = estado_global.set_sesion(id, rol, usuario_verificado)
+            if permiso == "Admin":
+                  menu_admin()
+            elif permiso == "usuario_estandar":
+                  menu_estandar()
             else:
-                print("el usuario no existe, no tiene permisos suficientes o la contraseña es incorrecta intente nuevamente mas tarde")
-                      
-        elif opcion == "2":
-        # opcion registrar usuario nuevo
-            p = datos_alta()
+                  print("usuario sin permisos")                      
+    elif opcion == "2":
+            # opcion registrar usuario nuevo
+            p = funciones.datos_alta()
             resultado = conexion_instanciada.insert_usuario(p.nombre, p.apellido, p.email, p.usuario, p.ver_password())
-        elif opcion == "3":
+    elif opcion == "3":
             return
             
-# menu de usuario segun el rol accede a un metodo u otro
 def menu_admin():
-    print(f"""
-                  Usuario: {estado_global.ver_usuario()}
-                  Acceso: {estado_global.ver_rol()}
-                  Codigo: {estado_global.ver_id()} """) 
-    
+    estado_global.ver_todo()    
         
     print(f"""
           Bienvenido al Menu para Administradores del sistema
@@ -72,15 +46,14 @@ def menu_admin():
                    """)
 
     if opcion == "1":        
-        # no se piden datos ya que trae una consulta de todos los usuarios        
+            # no se piden datos ya que trae una consulta de todos los usuarios        
             todos = conexion_instanciada.ver_usuarios()
-        # simple print pra ver la tupla de resultados
+            # simple print pra ver la tupla de resultados
             print(todos)
-        # finalizada la operacion ejecutar un menu de destrucion de la sesion
-            estado_global.cerrar_sesion()            
+            # finalizada la operacion ejecutar un menu de cerrar_sesion            
     elif opcion == "2":        
             if estado_global.ver_estado:
-                e = datos_editar()
+                e = funciones.datos_editar()
                 resultado = conexion_instanciada.editar_usuario(e.ver_email(), e.ver_nombre_usuario(), e.ver_password(), e.ver_rol(), e.ver_id())
                 # nuevamente verificar los permisos de admin almacenados en local
                 # opcion editar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
@@ -110,16 +83,12 @@ def menu_admin():
                         print(f"usuario por id:{usuario} el resultado de la eliminacion es: {operacion}")
             estado_global.cerrar_sesion()            
     elif opcion == "4":
-        # finalizada la operacion ejecutar un menu de destrucion de la sesion
+            # finalizada la operacion ejecutar un menu de destrucion de la sesion
             estado_global.cerrar_sesion()        
             return
     
 def menu_estandar():
-    print(f"""
-                  Usuario: {estado_global.ver_usuario()}
-                  Acceso: {estado_global.ver_rol()}
-                  Codigo: {estado_global.ver_id()} """)    
-    # rol estandar : solo puede ver sus datos personales
+    estado_global.ver_todo()
      
     print(f"""
           Bienvenido al Menu para Usuarios
@@ -132,103 +101,13 @@ def menu_estandar():
                    seleccione alguna de las 2 opciones: """)
     if opcion == "1":               
         # efectuar consulta a la base de datos con el id guardado en estado general
-            id = estado_global.ver_id()
-            d = conexion_instanciada.mis_datos(id)
-            print(d)
+            mis_datos = conexion_instanciada.mis_datos(estado_global.ver_id())
+            print(mis_datos)
             estado_global.cerrar_sesion()
     elif opcion == "2":
          estado_global.cerrar_sesion()
          return        
         
-def datos_alta():
-    # validacion nombre
-    nombre = input("ingrese su nombre: ") 
-    while len(nombre) < 3:
-        nombre = input("ingrese su nombre con minimos 3 caracteres: ")
-    while len(nombre) > 50:
-        nombre = input("ingrese su nombre con maximo 50 caracteres: ")
-    # validacion apellido
-    apellido = input("ingrese su apellido: ") 
-    while len(apellido) < 3:
-        apellido = input("ingrese su apellido con minimo 3 caracteres: ")
-    while len(apellido) > 50:
-        apellido = input("ingrese su apellido con maximo 50 caracteres: ")
-    # validar email
-    email = input("ingrese su email: ") 
-    while len(email) < 5:
-        email = input("ingrese su email con minimo 5 caracteres: ")    
-    expresion = r'^[\w\.-]+@[a-zA-Z\d-]+\.[a-zA-Z]{2,}$'    
-    while re.match(expresion, email) == None:
-        email = input("ingrese email valido: ")
-    while len(email) > 50:
-        email = input("ingrese su email con maximo 50 caracteres: ")
-    # validar usuario
-    nombre_usuario = input("ingrese su nombre de usuario: ") 
-    while len(nombre_usuario) < 5:
-        nombre_usuario = input("ingrese su nombre de usuario con minimo 5 caracteres: ")
-    while len(nombre_usuario) > 50:
-        nombre_usuario = input("ingrese su nombre de usuario con maximo 50 caracteres: ") 
-    # validar password
-    password = input("ingrese su password: ") 
-    while len(password) < 10:
-        password = input("ingrese su password con minimo 10 caracteres: ")
-    while len(password) > 50:
-        password = input("ingrese su password con maximo 50 caracteres: ")                    
-    # instanciar objeto, rellenarlo y devolverlo a main            
-    u = usuarios.Usuarios()
-    u.completar_perfil(nombre, apellido, nombre_usuario,email, password)
-    return u 
-
-def datos_editar():
-    # validacion id_usuario
-    id_usuario = input("ingrese el id de usuario: ") 
-    while int(id_usuario) < 1:
-        id_usuario = input("ingrese un id valido: ")        
-    # validar email
-    email = input("ingrese su email: ") 
-    while len(email) < 5:
-        email = input("ingrese su email con minimo 5 caracteres: ")    
-    expresion = r'^[\w\.-]+@[a-zA-Z\d-]+\.[a-zA-Z]{2,}$'    
-    while re.match(expresion, email) == None:
-        email = input("ingrese email valido: ")
-    while len(email) > 50:
-        email = input("ingrese su email con maximo 50 caracteres: ")
-    # validar usuario
-    nombre_usuario = input("ingrese su nombre de usuario: ") 
-    while len(nombre_usuario) < 5:
-        nombre_usuario = input("ingrese su nombre de usuario con minimo 5 caracteres: ")
-    while len(nombre_usuario) > 50:
-        nombre_usuario = input("ingrese su nombre de usuario con maximo 50 caracteres: ") 
-    # validar password
-    password_usuario = input("ingrese su password: ") 
-    while len(password_usuario) < 10:
-        password = input("ingrese su password con minimo 10 caracteres: ")
-    while len(password_usuario) > 50:
-        password = input("ingrese su password con maximo 50 caracteres: ")
-    # validacion rol
-    rol = input("ingrese el nuevo rol de usuario: ") 
-    while len(rol) < 5 and len(rol) < 16:
-        rol = input("ingrese un rol valido (Admin o usuario_estandar por ejemplo): ")                        
-    e = usuarios.Editar()
-    e.editar_relleno(id_usuario, email, nombre_usuario, password_usuario, rol )   
-    return e
-
-def requerir_datos_sesion():
-    # en este metodo ya estoy instanciando un objeto usuario con los datos necesarios
-    # validar usuario
-    usuario = input("ingrese su usuario: ")
-    while len(usuario) < 5:
-        usuario = input("ingrese su usuario con minimo 5 caracteres: ")
-    # validar password
-    password = input("ingrese su password: ") 
-    while len(password) < 10:
-        password = input("ingrese su password con minimo 10 caracteres: ")
-    while len(password) > 50:
-        password = input("ingrese su password con maximo 50 caracteres: ")                    
-    # instanciar objeto, rellenarlo y devolverlo a main            
-    login = (usuario , password)
-    return login
-
 
 if __name__ == "__main__":
     load_dotenv()
@@ -239,13 +118,9 @@ if __name__ == "__main__":
     root_password = os.getenv("MYSQL_ROOT_PASSWOR")
 # instanciar la clase
 conexion_instanciada = config_bd.Clase_mysql() 
-# Pasos a Cumplir
-# crear un script para poblar tabla
-
 # completar los argumentos del metodo
 conexion_instanciada.mysql_configurar(host,database,user,password)
-
 # carga del menu principal
-menu_inicial()
+menu_general()
 
         
