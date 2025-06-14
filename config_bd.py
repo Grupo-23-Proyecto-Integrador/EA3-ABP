@@ -67,7 +67,7 @@ class Clase_mysql:
                 return False
             consulta = "INSERT INTO usuarios_login (nombre, apellido, usuario, rol, email, password_usuario) VALUES (%s,%s,%s,%s,%s,%s)"
             usuario_estandar = 2
-            cursor.execute(consulta, (usuario, nombre, apellido, usuario_estandar, email, password))
+            cursor.execute(consulta, (nombre, apellido, usuario, usuario_estandar, email, password))
             # solucionado, habia puesto una sintaxis de postgres y eso me daba error en el return id
             id_generado = cursor.lastrowid
             self.conectar().commit()            
@@ -121,38 +121,39 @@ class Clase_mysql:
                 conexion.close()
 
     def consultar_username(self , u, password):
-        # consultar usuario por nombre de usuario y password
-        # retorna datos para crear una sesion activa
-        id = ""
-        rol = ""
-        usuario = ""
+        # consultar usuario por nombre de usuario y password        
         conexion = self.conectar()
         if not conexion:
             print(f'no se pudo establecer conexion con la BD')
             return False
-        
+        id = 0
+        rol = 0
+        usuario = ""
         try:
             # verifica la existencia del usuario
             cursor = conexion.cursor()
             # la consulta retorna 3 campos
+            
             verificar = "SELECT id_usuario, rol, usuario FROM usuarios_login WHERE usuario = %s AND password_usuario = %s"
             cursor.execute(verificar, (u ,password))
             # el metodo fetchone devuelve una tupla
-            resultado = cursor.fetchone()
-            # utilizo una clase sesion para manejar los datos            
+            resultado = cursor.fetchone()            
             id , rol, usuario = resultado
-            if id > 0 and usuario != "" and rol != "":
-                res = [id, rol, usuario]                
+            if id > 0 and usuario != "" and rol > 0:
+                res = [id, rol, usuario]
+                print(res)                
                 return res
             else:
                 id =""                                               
-                res = [id, rol, usuario]                
+                res = [id, rol, usuario]
+                print(res)                
                 return res  
         except Exception as e:
             print(f'su usuario o contraseña son incorrectos intente nuevamente')
             # retorno una tupla vacia
             id = ""    
-            res = [id, rol, usuario]                
+            res = [id, rol, usuario]
+            print(res)                
             return res 
         finally:
             if cursor:
@@ -160,28 +161,24 @@ class Clase_mysql:
                 conexion.close()
 
     def ver_usuarios(self):
-        # trae un resultado con todos los usuarios del sistema considerando que es un resultado pequeño
-        # no requiere argumentos
+        # trae un resultado con todos los usuarios del sistema considerando que es un resultado pequeño, no requiere argumentos
         conexion = self.conectar()
         if not conexion:
             print(f'no se pudo establecer conexion con la BD')
             return False
         
         try:
-            # instancio un objeto cursos con todos los metodos para interactuar con la bd
+            # instancio un objeto cursor con todos los metodos para interactuar con la bd
             cursor = conexion.cursor()
-            # consulta
             consulta = f"""SELECT 
-                            u.id_usuario, 
+                            u.id_usuario,
+                            u.nombre,
+                            u.apellido, 
                             u.email, 
                             u.usuario, 
                             u.rol, 
-                            ds.nombre, 
-                            ds.apellido, 
-                            ds.dni, 
-                            ds.celular, 
-                            ds.domicilio 
-                        FROM usuarios_login AS u LEFT JOIN datos_sensibles AS ds ON u.id_usuario = ds.id_usuario;"""
+                            r.id_rol,  
+                        FROM usuarios_login AS u LEFT JOIN roles AS r ON u.rol = r.id_rol;"""
             cursor.execute(consulta)
             # el metodo fetchone devuelve una tupla
             resultado = cursor.fetchall()
@@ -202,8 +199,7 @@ class Clase_mysql:
 
     def mis_datos(self, id:int):
         print(id)
-        # trae mis datos de usuario
-        # el argumento requerido es mi id
+        # trae mis datos de usuario, el argumento requerido es mi id
         conexion = self.conectar()
         if not conexion:
             print(f'no se pudo establecer conexion con la BD')
@@ -213,17 +209,7 @@ class Clase_mysql:
             # instancio un objeto cursos con todos los metodos para interactuar con la bd
             cursor = conexion.cursor()
             # consulta de mis datos de ambas tablas
-            verificar = """SELECT 
-                            u.id_usuario, 
-                            u.email, 
-                            u.usuario, 
-                            u.rol, 
-                            ds.nombre, 
-                            ds.apellido, 
-                            ds.dni, 
-                            ds.celular, 
-                            ds.domicilio 
-                        FROM usuarios_login AS u LEFT JOIN datos_sensibles AS ds ON u.id_usuario = ds.id_usuario WHERE u.id_usuario = %s;"""
+            verificar = "SELECT id_usuario, usuario, rol, nombre, apellido, email  FROM usuarios_login WHERE id_usuario = %s;"
             cursor.execute(verificar, (id,))
             # el metodo fetchone devuelve una sola tupla
             resultado = cursor.fetchone()            

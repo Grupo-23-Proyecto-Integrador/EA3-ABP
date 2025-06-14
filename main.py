@@ -102,7 +102,7 @@ def menu_estandar():
     if opcion == "1":               
         # efectuar consulta a la base de datos con el id guardado en estado general
             mis_datos = conexion_instanciada.mis_datos(estado_global.ver_id())
-            print(mis_datos)
+            funciones.ver_misdatos(mis_datos)
             estado_global.cerrar_sesion()
     elif opcion == "2":
          estado_global.cerrar_sesion()

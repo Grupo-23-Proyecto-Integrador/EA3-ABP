@@ -101,4 +101,14 @@ def menu_inicial():
     opcion = "0"
     while opcion not in ["1","2","3"]:        
         opcion = input(f"""ingrese alguna opcion valida :  """)
-    return opcion    
+    return opcion   
+
+def ver_misdatos(datos):
+    print(f"""
+            id: {datos[0]}
+            usuario: {datos[1]}
+            permisos: {datos[2]}
+            nombre: {datos[3]}
+            apellido: {datos[4]}
+            email: {datos[5]}
+            """)

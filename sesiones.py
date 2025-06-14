@@ -6,23 +6,23 @@ class Nueva():
         self._id = 0
 
     def set_sesion(self, id:int, rol:str, usuario:str):
-        if id == "" or id == "0" or rol == "" or usuario == "":
-                 print("los datos de inicio de sesion son incorrectos")
-                 return
-        elif rol == "admin" or rol == "Admin":
-                return "Admin"
-        elif rol == "usuario_estandar":
-                return "usuario_estandar"
-        else:
-                print("el usuario no existe, no tiene permisos suficientes o la contraseña es incorrecta intente nuevamente mas tarde")
-                return "inexistente"   
-             
-        if id != 0 and rol != "" and usuario != "":
-            self._rol = rol
-            self._usuario = usuario
+        if id > 0 and rol == 1:
+            # 1 es admin
             self._id = id
+            self._rol = 1
             self._logueado = True
-            
+            self._usuario = usuario
+            return "Admin"
+        elif id > 0 and rol == 2:
+            # 2 es usuario estandar
+            self._id = id
+            self._rol = 1
+            self._logueado = True
+            self._usuario = usuario
+            return "usuario_estandar"
+        else:
+            print("ocurrio un error al settear la sesion")
+            return ""    
 
     def cerrar_sesion(self):
         self._logueado = False
