@@ -40,10 +40,22 @@ def datos_alta():
     return u 
 
 def datos_editar():
-    # validacion id_usuario
-    id_usuario = input("ingrese el id de usuario: ") 
-    while int(id_usuario) < 1:
-        id_usuario = input("ingrese un id valido: ")        
+    usuario = usuarios.Usuarios()
+    id = "0"
+    while int(id) < 1:
+        id= input("ingrese el id del usuario a editar: ")
+    # validacion nombre
+    nombre = input("ingrese su nombre: ") 
+    while len(nombre) < 3:
+        nombre = input("ingrese su nombre con minimos 3 caracteres: ")
+    while len(nombre) > 50:
+        nombre = input("ingrese su nombre con maximo 50 caracteres: ")
+    # validacion apellido
+    apellido = input("ingrese su apellido: ") 
+    while len(apellido) < 3:
+        apellido = input("ingrese su apellido con minimo 3 caracteres: ")
+    while len(apellido) > 50:
+        apellido = input("ingrese su apellido con maximo 50 caracteres: ")            
     # validar email
     email = input("ingrese su email: ") 
     while len(email) < 5:
@@ -66,12 +78,18 @@ def datos_editar():
     while len(password_usuario) > 50:
         password_usuario = input("ingrese su password con maximo 50 caracteres: ")
     # validacion rol
+    rol_id = 0
     rol = input("ingrese el nuevo rol de usuario: ") 
     while len(rol) < 5 and len(rol) < 16:
-        rol = input("ingrese un rol valido (Admin o usuario_estandar por ejemplo): ")                        
-    e = usuarios.Editar()
-    e.editar_relleno(id_usuario, email, nombre_usuario, password_usuario, rol )   
-    return e
+        rol = input("ingrese un rol valido (Admin o usuario_estandar por ejemplo): ")
+    if rol == "Admin":
+        rol_id = 1
+    elif rol == "usuario_estandar":
+        rol_id = 2
+    else: 
+        return usuario     
+    usuario.modificar(nombre, apellido, email, nombre_usuario, password_usuario, rol_id)      
+    return usuario
 
 def requerir_datos_sesion():
     # en este metodo ya estoy instanciando un objeto usuario con los datos necesarios

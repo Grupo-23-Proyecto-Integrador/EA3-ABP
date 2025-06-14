@@ -39,11 +39,9 @@ class Nueva():
     def ver_id(self):
         return self._id   
     
-
     def ver_estado(self):
         return self._logueado
 
-    # ver todo solo para develop no produccion
     def ver_todo(self):
         print(f"""
                   id: {self._id}

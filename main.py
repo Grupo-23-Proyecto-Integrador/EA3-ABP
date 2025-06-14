@@ -30,31 +30,25 @@ def menu_general():
             return
             
 def menu_admin():
-    estado_global.ver_todo()    
-        
-    print(f"""
-          Bienvenido al Menu para Administradores del sistema
+    estado_global.ver_todo()  
+    print(f"""  Bienvenido al Menu para Administradores del sistema
 
           * 1. Ver todos los usuarios del sistema
           * 2. Editar un usuario
           * 3. Eliminar un usuario
           * 4. Salir 
 
-          """)
-    
-    opcion = input(f"""ingrese alguna opcion valida:
-                   """)
-
+          """)    
+    opcion = input("ingrese alguna opcion valida:  """)
     if opcion == "1":        
             # no se piden datos ya que trae una consulta de todos los usuarios        
             todos = conexion_instanciada.ver_usuarios()
             # simple print pra ver la tupla de resultados
-            print(todos)
-            # finalizada la operacion ejecutar un menu de cerrar_sesion            
+            print(todos)            
     elif opcion == "2":        
             if estado_global.ver_estado:
-                e = funciones.datos_editar()
-                resultado = conexion_instanciada.editar_usuario(e.ver_email(), e.ver_nombre_usuario(), e.ver_password(), e.ver_rol(), e.ver_id())
+                p = funciones.datos_editar()
+                res = conexion_instanciada.editar_usuario(p.nombre, p.apellido, p.email, p.usuario, password, p.rol, p.id )
                 # nuevamente verificar los permisos de admin almacenados en local
                 # opcion editar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
                 # finalizada la operacion ejecutar un menu de destrucion de la sesion

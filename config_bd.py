@@ -42,7 +42,7 @@ class Clase_mysql:
         if self.estado_conexion and self.estado_conexion.is_connected():
             self.estado_conexion.close()
             # Conexión mysql cerrada, hago un print si lo veo necesario
-    # Creo una consulta Insert (nuevo usuario)
+    
     def insert_usuario(self , nombre, apellido, usuario, email, password):
         # revisar este metodo constantemente ya que esta el rediseño de las tablas y sus relaciones
         # retorna true si fue exitosa la consulta sino retorna false porque algo salio mal
@@ -170,15 +170,7 @@ class Clase_mysql:
         try:
             # instancio un objeto cursor con todos los metodos para interactuar con la bd
             cursor = conexion.cursor()
-            consulta = f"""SELECT 
-                            u.id_usuario,
-                            u.nombre,
-                            u.apellido, 
-                            u.email, 
-                            u.usuario, 
-                            u.rol, 
-                            r.id_rol,  
-                        FROM usuarios_login AS u LEFT JOIN roles AS r ON u.rol = r.id_rol;"""
+            consulta = " SELECT id_usuario, usuario, nombre, apellido, email, rol FROM usuarios_login; "
             cursor.execute(consulta)
             # el metodo fetchone devuelve una tupla
             resultado = cursor.fetchall()
@@ -260,7 +252,7 @@ class Clase_mysql:
                 cursor.close()
                 conexion.close() 
 
-    def editar_usuario(self, email, usuario, password_usuario, rol, id_usuario):
+    def editar_usuario(self, nombre, apellido, email, usuario, password_usuario, rol, id_usuario):
         conexion = self.conectar()
         if not conexion:
             print(f'no se pudo establecer conexion con la BD')
@@ -270,8 +262,8 @@ class Clase_mysql:
             # instancio un objeto cursor
             cursor = conexion.cursor()
             # la consulta retorna 1 valor (del id editado)
-            editar = (f"UPDATE usuarios_login SET email = %s, usuario = %s , password_usuario = %s, rol = %s WHERE id_usuario = %s")           
-            cursor.execute(editar, (email, usuario, password_usuario, rol, id_usuario,))
+            editar = (f"UPDATE usuarios_login SET nombre = %s, apellido = %s, email = %s, usuario = %s , password_usuario = %s, rol = %s WHERE id_usuario = %s")           
+            cursor.execute(editar, (nombre, apellido, email, usuario, password_usuario, rol, id_usuario,))
             # el metodo lastrowid
             resultado = cursor.lastrowid()           
             if resultado < 0:
