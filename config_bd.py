@@ -1,10 +1,23 @@
-import mysql.connector 
+import mysql.connector , os
 from mysql.connector import Error
+from dotenv import load_dotenv
 
-# esta clase unicamente se encarga de interactuar con la base de datos, unica responsabilidad a traces de sus metodos
+load_dotenv()
+host = os.getenv("HOST")
+database = os.getenv("DATABASE")
+user = os.getenv("MYSQLUSER")
+password = os.getenv("MYSQLPASSWORD")
+root_password = os.getenv("MYSQL_ROOT_PASSWOR")
+
+""" esta clase unicamente se encarga de interactuar con la base de datos, unica responsabilidad a traves de sus metodos
+    los metodos corresponden a un CRUD (crear, leer, actualizar, borrar) de gestion de usuarios.
+    el primer metodo de esta clase configura el objeto con todas las configuraciones de la base da datos mysql que se encuentran configurados en el archivo .env (variables de entorno).
+    los metodos conectar y cerrar_conexion cumplen la finalidad de preparar la conexion y cerrar la conexion luego de la consulta (cada matodo).
+    el objeto instanciado y configurado sera exportado de este modulo hacia el modulo principal o main.py
+ """
 
 class Clase_mysql:
-    # metodo inicial para configurar los datos de la conexion
+
     def mysql_configurar(self, mysql_host, mysql_database:str, mysql_user:str, mysql_password:str):
         # define conexion mysql
         self.host = mysql_host
@@ -12,7 +25,7 @@ class Clase_mysql:
         self.user = mysql_user
         self.password = mysql_password
         self.estado_conexion = None
-    # metodo: Establece y devuelve una conexión a la base de datos MySQL. o devuelvo None
+    
     def conectar(self):                        
         if self.estado_conexion is None or not self.estado_conexion.is_connected():
             try:
@@ -36,7 +49,7 @@ class Clase_mysql:
                 #retorna None en caso de no ser exitosa la conexion.
         else:
             return self.estado_conexion
-    # Cierra la conexión activa a la base de datos, si existe.
+   
     def cerrar_conexion(self):       
         
         if self.estado_conexion and self.estado_conexion.is_connected():
@@ -281,3 +294,7 @@ class Clase_mysql:
             if cursor:
                 cursor.close()
                 conexion.close()                
+
+conexion_instanciada = Clase_mysql()
+# completar los argumentos del metodo
+conexion_instanciada.mysql_configurar(host,database,user,password)                 

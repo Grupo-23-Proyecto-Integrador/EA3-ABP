@@ -1,9 +1,15 @@
-from dotenv import load_dotenv
-import os, funciones
-import sesiones , config_bd 
+
+import funciones , sesiones
 from mysql.connector import Error
+from config_bd import conexion_instanciada
 
 estado_global = sesiones.Nueva()
+
+"""""
+el objeto estado_global es instanciado de la clase sesiones, que es un archivo global usado en este modulo para guardar los datos de las sesiones iniciadas por los usuarios
+estableciendo las propiedades de id , rol, usuario, las cuales sirven para mostrar los datos cuando se inicie sesion y para mantener la sesion abierta
+el metodo set_sesion() configura la sesion y el metododo cerrar_sesion() borra o blanquea los valores del objeto.
+"""
 
 def menu_general():       
     opcion = funciones.menu_inicial()
@@ -48,7 +54,7 @@ def menu_admin():
     elif opcion == "2":        
             if estado_global.ver_estado:
                 p = funciones.datos_editar()
-                res = conexion_instanciada.editar_usuario(p.nombre, p.apellido, p.email, p.usuario, password, p.rol, p.id )
+                res = conexion_instanciada.editar_usuario(p.nombre, p.apellido, p.email, p.usuario, p.password, p.rol, p.id )
                 # nuevamente verificar los permisos de admin almacenados en local
                 # opcion editar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
                 # finalizada la operacion ejecutar un menu de destrucion de la sesion
@@ -103,18 +109,7 @@ def menu_estandar():
          return        
         
 
-if __name__ == "__main__":
-    load_dotenv()
-    host = os.getenv("HOST")
-    database = os.getenv("DATABASE")
-    user = os.getenv("MYSQLUSER")
-    password = os.getenv("MYSQLPASSWORD")
-    root_password = os.getenv("MYSQL_ROOT_PASSWOR")
-# instanciar la clase
-conexion_instanciada = config_bd.Clase_mysql() 
-# completar los argumentos del metodo
-conexion_instanciada.mysql_configurar(host,database,user,password)
-# carga del menu principal
-menu_general()
+if __name__ == "__main__":    
+    menu_general()
 
         

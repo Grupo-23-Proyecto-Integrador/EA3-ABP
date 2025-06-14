@@ -1,5 +1,11 @@
 import usuarios , re
 
+"""""
+estas funciones no estan asociadas a ninguna clase, en principio responden al principio de modularidad y unica responsabilidad de cada una de ellas.
+se evita de esta forma que el menu general se vea mas limpio o con menos codigo, respondiendo a buenas practicas.
+"""
+
+
 def datos_alta():
     # validacion nombre
     nombre = input("ingrese su nombre: ") 
