@@ -9,18 +9,21 @@ estado_global = sesiones.Nueva()
 el objeto estado_global es instanciado de la clase sesiones, que es un archivo global usado en este modulo para guardar los datos de las sesiones iniciadas por los usuarios
 estableciendo las propiedades de id , rol, usuario, las cuales sirven para mostrar los datos cuando se inicie sesion y para mantener la sesion abierta
 el metodo set_sesion() configura la sesion y el metododo cerrar_sesion() borra o blanquea los valores del objeto.
+
+    opcion 1 es inicio de sesion.
+    opcion 2 es registro en el sistema ( ejecuto la funcion datos_alta() del modulo funciones que va a requerir todos los datos obligatorios)
+    opcion 3 salir de la app
+
+la funcion datos_alta() devuelve un objeto de la clase usuarios / podria haberse trabajado con una tupla o lista ( a eleccion) en el retorno de los datos validados
+adentro de la funcion se ejecutan bucles while para la validacion de cada uno de los inputs ogligatorios
 """
 
 def menu_general():       
-    opcion = funciones.menu_inicial()
-    # opcion 1 inicio de sesion    
+    opcion = funciones.menu_inicial()    
     if opcion == "1":
             sesion = funciones.requerir_datos_sesion()
-            # devuelve usuario y contraseña
             usuario , password = sesion        
-            # verifico que el usuario exista previamente en el sistema
-            id, rol, usuario_verificado = conexion_instanciada.consultar_username(usuario, password)                      
-            # ahora verifico el menu que le corresponde de acuerdo a la consulta de la base de datos      
+            id, rol, usuario_verificado = conexion_instanciada.consultar_username(usuario, password)                            
             permiso = estado_global.set_sesion(id, rol, usuario_verificado)
             if permiso == "Admin":
                   menu_admin()
@@ -29,7 +32,6 @@ def menu_general():
             else:
                   print("usuario sin permisos")                      
     elif opcion == "2":
-            # opcion registrar usuario nuevo
             p = funciones.datos_alta()
             resultado = conexion_instanciada.insert_usuario(p.nombre, p.apellido, p.email, p.usuario, p.ver_password())
     elif opcion == "3":

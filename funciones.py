@@ -96,10 +96,12 @@ def datos_editar():
         return usuario     
     usuario.modificar(nombre, apellido, email, nombre_usuario, password_usuario, rol_id)      
     return usuario
-
-def requerir_datos_sesion():
-    # en este metodo ya estoy instanciando un objeto usuario con los datos necesarios
-    # validar usuario
+"""
+esta funcion requerir_datos_sesion() pertenece al modulo funciones.py
+no requiere argumentos y retorna o devuelve una tupla (arreglo) con las variables usuario y password) que luego van a ser desestructurados fuera de esta funcion
+efectua validaciones de minimo y maximo de caracteres permitidos.
+"""
+def requerir_datos_sesion():    
     usuario = input("ingrese su usuario: ")
     while len(usuario) < 5:
         usuario = input("ingrese su usuario con minimo 5 caracteres: ")
@@ -109,10 +111,14 @@ def requerir_datos_sesion():
         password = input("ingrese su password con minimo 10 caracteres: ")
     while len(password) > 50:
         password = input("ingrese su password con maximo 50 caracteres: ")                    
-    # instanciar objeto, rellenarlo y devolverlo a main            
     login = (usuario , password)
     return login
 
+""""esta funcion menu_inicial()
+    muestra en pantalla 3 opciones: (inicio de sesion / registrarse como nuevo usuario / salir de la app)
+    internamente tiene un bucle while que itera un arreglo y pregunta que mientras sea diferente a la opcion 1, 2, 3 siga ejecutando el bucle
+    si el input suministrado es igual a alguna de las 3 opciones, devuelve ese valor , el return de la funcion es con ese valor.
+"""
 def menu_inicial():
     print(f"""
           Bienvenido al Menu gestor de usuarios del sistema

@@ -19,5 +19,8 @@ class Usuarios():
         self.rol = rol
         self.id = id
 
-   
+"""esta clase usuarios se creo con la finalidad de evitar el uso de listas y manejo de indices para recuperar cada propiedad que es la que tiene el objeto instanciado.
+    cuando se iniciliza un objeto por defecto esta vacio como se ve en el metodo __init__ porque púede existir la posibilidad de devolver un objeto vacio.
+    el siguiente metodo modificar es para completar las propiedades del objeto
+"""""   
           

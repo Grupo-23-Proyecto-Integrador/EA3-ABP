@@ -134,7 +134,10 @@ class Clase_mysql:
                 conexion.close()
 
     def consultar_username(self , u, password):
-        # consultar usuario por nombre de usuario y password        
+        """este metodo pertenece a la clase Clase_mysql y requiere 3 argumentos: el self del constructor, el nombre de usuario y la contraseña.
+           este metodo devuelve una lista porque sus elementos son de distinto tipo de dato (int , str) que luego seran desestructurados fuera de este metodo
+           la lista retornada contiene id, rol (id) y nombre de usuario segun la consulta sql abajo detallada        
+        """       
         conexion = self.conectar()
         if not conexion:
             print(f'no se pudo establecer conexion con la BD')
@@ -295,6 +298,13 @@ class Clase_mysql:
                 cursor.close()
                 conexion.close()                
 
+# creo un objeto de la clase Clase_mysql
 conexion_instanciada = Clase_mysql()
-# completar los argumentos del metodo
+"""utilizo el metodo para configurar el objeto:
+    host: el ip o localhost
+    database: nombre de la base de datos
+    user: es el usuario de la base de datos
+    password: es la contraseña para acceder a la base de datos
+"""
+# metodo para configurar valores
 conexion_instanciada.mysql_configurar(host,database,user,password)                 

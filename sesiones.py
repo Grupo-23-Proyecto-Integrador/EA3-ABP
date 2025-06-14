@@ -1,3 +1,11 @@
+""" la clase Nueva es para instanciar un objeto vacio con valores de una sesion sin iniciar
+el metodo set_sesion() configura el objeto con valores de un usuario logueado exitosamente, dentro del metodo set_sesion() tiene validaciones.
+el objeto generado cumple la finalidad de variable global que conserva las configuraciones necesarias que usan otras funciones
+el nombre estado_global nos parecio mas asertivo.
+estado_global lo que busca es evitar hacer la misma consulta de existencia de un usuario determinado en la base de datos (rendimiento por ejemplo)
+
+"""
+
 class Nueva():
     def __init__(self):
         self._logueado = False
@@ -21,7 +29,7 @@ class Nueva():
             self._usuario = usuario
             return "usuario_estandar"
         else:
-            print("ocurrio un error al settear la sesion")
+            print("ocurrio un error al setear la sesion")
             return ""    
 
     def cerrar_sesion(self):
