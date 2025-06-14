@@ -156,20 +156,17 @@ class Clase_mysql:
             resultado = cursor.fetchone()            
             id , rol, usuario = resultado
             if id > 0 and usuario != "" and rol > 0:
-                res = [id, rol, usuario]
-                print(res)                
+                res = [id, rol, usuario]                
                 return res
             else:
                 id =""                                               
-                res = [id, rol, usuario]
-                print(res)                
+                res = [id, rol, usuario]               
                 return res  
         except Exception as e:
             print(f'su usuario o contraseña son incorrectos intente nuevamente')
             # retorno una tupla vacia
             id = ""    
-            res = [id, rol, usuario]
-            print(res)                
+            res = [id, rol, usuario]                
             return res 
         finally:
             if cursor:

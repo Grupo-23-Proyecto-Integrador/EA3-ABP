@@ -142,3 +142,12 @@ def ver_misdatos(datos):
             apellido: {datos[4]}
             email: {datos[5]}
             """)
+    
+# esta funcion recibe 3 argumentos, permiso que es string y 2 funciones ( admin , estandar)    
+def selector_menu(permiso, menu_admin, menu_estandar):
+    if permiso == "Admin":
+                  return menu_admin
+    elif permiso == "usuario_estandar":
+                  return menu_estandar
+    else:
+        print("usuario sin permisos")     

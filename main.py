@@ -16,6 +16,9 @@ el metodo set_sesion() configura la sesion y el metododo cerrar_sesion() borra o
 
 la funcion datos_alta() devuelve un objeto de la clase usuarios / podria haberse trabajado con una tupla o lista ( a eleccion) en el retorno de los datos validados
 adentro de la funcion se ejecutan bucles while para la validacion de cada uno de los inputs ogligatorios
+
+si se opto por iniciar sesion ya sea admin o usuario estandar esos datos se setean en el objeto estado_global.set_sesion()
+luego dependiendo el rol se ejecuta la funcion menu_admin o menu_estandar
 """
 
 def menu_general():       
@@ -25,15 +28,11 @@ def menu_general():
             usuario , password = sesion        
             id, rol, usuario_verificado = conexion_instanciada.consultar_username(usuario, password)                            
             permiso = estado_global.set_sesion(id, rol, usuario_verificado)
-            if permiso == "Admin":
-                  menu_admin()
-            elif permiso == "usuario_estandar":
-                  menu_estandar()
-            else:
-                  print("usuario sin permisos")                      
+            menu = funciones.selector_menu(permiso, menu_admin, menu_estandar)
+            menu()                    
     elif opcion == "2":
             p = funciones.datos_alta()
-            resultado = conexion_instanciada.insert_usuario(p.nombre, p.apellido, p.email, p.usuario, p.ver_password())
+            resultado = conexion_instanciada.insert_usuario(p.nombre, p.apellido, p.email, p.usuario, p.password)
     elif opcion == "3":
             return
             
@@ -48,25 +47,17 @@ def menu_admin():
 
           """)    
     opcion = input("ingrese alguna opcion valida:  """)
-    if opcion == "1":        
-            # no se piden datos ya que trae una consulta de todos los usuarios        
-            todos = conexion_instanciada.ver_usuarios()
-            # simple print pra ver la tupla de resultados
-            print(todos)            
+    if opcion == "1":      
+        todos = conexion_instanciada.ver_usuarios()            
+        print(todos) # simple print para ver la tupla de resultados           
     elif opcion == "2":        
-            if estado_global.ver_estado:
+            if estado_global.ver_estado == True:
                 p = funciones.datos_editar()
                 res = conexion_instanciada.editar_usuario(p.nombre, p.apellido, p.email, p.usuario, p.password, p.rol, p.id )
-                # nuevamente verificar los permisos de admin almacenados en local
-                # opcion editar usuario ( le tengo que solicitar algun campo, id, usuario o mail a mi eleccion)
-                # finalizada la operacion ejecutar un menu de destrucion de la sesion
-            estado_global.cerrar_sesion()
     elif opcion == "3":
             # nuevamente verificar los permisos de admin almacenados en local
-            if estado_global.ver_estado:
-                # no se piden datos ya que trae una consulta de todos los usuarios        
-                todos = conexion_instanciada.ver_usuarios()
-                # simple print pra ver la tupla de resultados
+            if estado_global.ver_estado == True:                        
+                todos = conexion_instanciada.ver_usuarios()                
                 print(todos)
                 # este metodo devuelve true o false dependiendo si la cesion esta activa
                 usuario = "0"
@@ -82,8 +73,7 @@ def menu_admin():
                                              """)               
                         operacion = conexion_instanciada.eliminar_usuario_id(usuario)
                         # finalizada la operacion ejecutar un menu de destrucion de la sesion
-                        print(f"usuario por id:{usuario} el resultado de la eliminacion es: {operacion}")
-            estado_global.cerrar_sesion()            
+                        print(f"usuario por id:{usuario} el resultado de la eliminacion es: {operacion}")            
     elif opcion == "4":
             # finalizada la operacion ejecutar un menu de destrucion de la sesion
             estado_global.cerrar_sesion()        
@@ -102,10 +92,9 @@ def menu_estandar():
     opcion = input("""
                    seleccione alguna de las 2 opciones: """)
     if opcion == "1":               
-        # efectuar consulta a la base de datos con el id guardado en estado general
+            # efectuar consulta a la base de datos con el id guardado en estado general
             mis_datos = conexion_instanciada.mis_datos(estado_global.ver_id())
-            funciones.ver_misdatos(mis_datos)
-            estado_global.cerrar_sesion()
+            funciones.ver_misdatos(mis_datos)            
     elif opcion == "2":
          estado_global.cerrar_sesion()
          return        
