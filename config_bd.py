@@ -16,44 +16,44 @@ root_password = os.getenv("MYSQL_ROOT_PASSWOR")
     el objeto instanciado y configurado sera exportado de este modulo hacia el modulo principal o main.py
  """
 
-class Clase_mysql:
+class Conexion_mysql:
 
-    def mysql_configurar(self, mysql_host, mysql_database:str, mysql_user:str, mysql_password:str):
+    def mysql_configurar(self, mysql_host:str, mysql_database:str, mysql_user:str, mysql_password:str):
         # define conexion mysql
-        self.host = mysql_host
-        self.database = mysql_database
-        self.user = mysql_user
-        self.password = mysql_password
-        self.estado_conexion = None
+        self._host = mysql_host
+        self._database = mysql_database
+        self._user = mysql_user
+        self._password = mysql_password
+        self._estado_conexion = None
     
     def conectar(self):                        
-        if self.estado_conexion is None or not self.estado_conexion.is_connected():
+        if self._estado_conexion is None or not self._estado_conexion.is_connected():
             try:
                 # muy importante aca estoy instanciando un objeto de la libreria mysql(connector.connect)
                 # se le pasan los argumentos del metodo __init__
-                self.estado_conexion = mysql.connector.connect(
-                    host=self.host,
-                    database=self.database,
-                    user=self.user,
-                    password=self.password
+                self._estado_conexion = mysql.connector.connect(
+                    host=self._host,
+                    database=self._database,
+                    user=self._user,
+                    password=self._password
                 )
-                if self.estado_conexion.is_connected():
+                if self._estado_conexion.is_connected():
                     # is_connected (es un metodo heredado)
                     print(f"")
                     # el print de mostrar conexion exitosa es opcional, estaba para comprobar que efectivamente funcione
-                return self.estado_conexion
+                return self._estado_conexion
                 # si la conexión fue exitosa
             except Error as e:
                 print(f"Error al conectar a MySQL: {e}")
                 return None
                 #retorna None en caso de no ser exitosa la conexion.
         else:
-            return self.estado_conexion
+            return self._estado_conexion
    
     def cerrar_conexion(self):       
         
-        if self.estado_conexion and self.estado_conexion.is_connected():
-            self.estado_conexion.close()
+        if self._estado_conexion and self._estado_conexion.is_connected():
+            self._estado_conexion.close()
             # Conexión mysql cerrada, hago un print si lo veo necesario
     
     def insert_usuario(self , nombre, apellido, usuario, email, password):
@@ -296,7 +296,7 @@ class Clase_mysql:
                 conexion.close()                
 
 # creo un objeto de la clase Clase_mysql
-conexion_instanciada = Clase_mysql()
+conexion_instanciada = Conexion_mysql()
 """utilizo el metodo para configurar el objeto:
     host: el ip o localhost
     database: nombre de la base de datos
