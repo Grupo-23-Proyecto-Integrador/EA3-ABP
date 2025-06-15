@@ -18,7 +18,13 @@ la funcion datos_alta() devuelve un objeto de la clase usuarios / podria haberse
 adentro de la funcion se ejecutan bucles while para la validacion de cada uno de los inputs ogligatorios
 
 si se opto por iniciar sesion ya sea admin o usuario estandar esos datos se setean en el objeto estado_global.set_sesion()
-luego dependiendo el rol se ejecuta la funcion menu_admin o menu_estandar
+luego dependiendo el rol se ejecuta la funcion menu_admin o menu_estandar.
+
+La funcion menu_admin() tiene 3 opciones de admin
+cualquiera de las 3 opciones implica llamar al metodo del objeto que intereactua con la base de datos
+
+la funcion menu_estandar solo permite llamar a un metodo del objeto mysql que permite ver los propios datos segun id
+ver_misdatos es una funcion que visualiza el contenido de la lista pasada como argumento
 """
 
 def menu_general():       

@@ -5,7 +5,8 @@ estas funciones no estan asociadas a ninguna clase, en principio responden al pr
 se evita de esta forma que el menu general se vea mas limpio o con menos codigo, respondiendo a buenas practicas.
 """
 
-
+""" la funcion datos_alta() ejecuta validaciones de inputs, hace uso del mudulo re ( expresion regular de email) para esa validacion.
+esta funcion retorna un objeto de la clase usuarios y se usa el metodo modificar (que funciona como metodo setter) """
 def datos_alta():
     # validacion nombre
     nombre = input("ingrese su nombre: ") 
@@ -39,12 +40,11 @@ def datos_alta():
     while len(password) < 10:
         password = input("ingrese su password con minimo 10 caracteres: ")
     while len(password) > 50:
-        password = input("ingrese su password con maximo 50 caracteres: ")                    
-    # instanciar objeto, rellenarlo y devolverlo a main            
+        password = input("ingrese su password con maximo 50 caracteres: ")                                
     u = usuarios.Usuarios()
     u.modificar(nombre, apellido, nombre_usuario, email, password)
     return u 
-
+# esta funcion cumple el rol casi identico a la anterior para validar campos de los atributos a modificar, retorna un objeto de la clase usuarios
 def datos_editar():
     usuario = usuarios.Usuarios()
     id = "0"
@@ -85,7 +85,8 @@ def datos_editar():
         password_usuario = input("ingrese su password con maximo 50 caracteres: ")
     # validacion rol
     rol_id = 0
-    rol = input("ingrese el nuevo rol de usuario: ") 
+    rol = input("ingrese el nuevo rol de usuario: ")
+    # esta parte setea el valor o rol para setearlo en el objeto (usuario) y retornalo 
     while len(rol) < 5 and len(rol) < 16:
         rol = input("ingrese un rol valido (Admin o usuario_estandar por ejemplo): ")
     if rol == "Admin":
@@ -132,7 +133,7 @@ def menu_inicial():
     while opcion not in ["1","2","3"]:        
         opcion = input(f"""ingrese alguna opcion valida :  """)
     return opcion   
-
+# la funcion ver_misdatos(lista) hace un print de pantalla de la lista segun los indices
 def ver_misdatos(datos):
     print(f"""
             id: {datos[0]}
@@ -143,7 +144,7 @@ def ver_misdatos(datos):
             email: {datos[5]}
             """)
     
-# esta funcion recibe 3 argumentos, permiso que es string y 2 funciones ( admin , estandar)    
+# esta funcion recibe 3 argumentos, permiso que es string y 2 funciones ( admin , estandar)  y retorna 1 funcion dependiendo del valor del parametro permiso  
 def selector_menu(permiso, menu_admin, menu_estandar):
     if permiso == "Admin":
                   return menu_admin

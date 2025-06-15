@@ -3,7 +3,8 @@ el metodo set_sesion() configura el objeto con valores de un usuario logueado ex
 el objeto generado cumple la finalidad de variable global que conserva las configuraciones necesarias que usan otras funciones
 el nombre estado_global nos parecio mas asertivo.
 estado_global lo que busca es evitar hacer la misma consulta de existencia de un usuario determinado en la base de datos (rendimiento por ejemplo)
-
+Los metodos siguientes son para ver las propiedades del objeto son privadas tienen guion bajo.
+los unicos 3 metodos que permiten acceder y editar las porpiedades del objeto son set_sesion() y cerrar_sesion()
 """
 
 class Nueva():
