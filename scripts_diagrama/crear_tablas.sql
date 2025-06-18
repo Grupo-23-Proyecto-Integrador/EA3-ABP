@@ -6,8 +6,6 @@ no hay atributos no claves  que dependan de atributos no claves, solo hay relaci
 hay separacion de entidades (como objetos con sus propiedades),
  */ 
 
-
-
 CREATE TABLE roles (
                     id_rol INT AUTO_INCREMENT PRIMARY KEY,
                     nombre_rol VARCHAR(50) UNIQUE,

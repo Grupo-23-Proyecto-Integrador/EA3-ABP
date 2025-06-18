@@ -15,6 +15,7 @@ class Nueva():
         self._id = 0
 
     def set_sesion(self, id:int, rol:str, usuario:str):
+        
         if id > 0 and rol == 1:
             # 1 es admin
             self._id = id
@@ -25,7 +26,6 @@ class Nueva():
         elif id > 0 and rol == 2:
             # 2 es usuario estandar
             self._id = id
-            self._rol = 1
             self._logueado = True
             self._usuario = usuario
             return "usuario_estandar"

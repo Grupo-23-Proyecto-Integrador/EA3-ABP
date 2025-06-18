@@ -38,7 +38,7 @@ class Conexion_mysql:
                     password=self._password
                 )
                 if self._estado_conexion.is_connected():
-                    # is_connected (es un metodo heredado)
+                    # is_connected (es un metodo heredado) ****¿de donde?
                     print(f"")
                     # el print de mostrar conexion exitosa es opcional, estaba para comprobar que efectivamente funcione
                 return self._estado_conexion
